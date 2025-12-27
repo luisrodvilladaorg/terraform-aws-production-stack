@@ -24,3 +24,20 @@ module "networking" {
     "eu-west-3c"
   ]
 }
+
+//Called module ASG
+
+module "asg" {
+  source = "../../modules/asg"
+
+  project_name = "terraform-aws-stack"
+  environment  = "dev"
+
+  vpc_id     = module.networking.vpc_id
+  subnet_ids = module.networking.public_subnet_ids
+
+  instance_type    = "t3.micro"
+  desired_capacity = 1
+  min_size         = 1
+  max_size         = 3
+}
