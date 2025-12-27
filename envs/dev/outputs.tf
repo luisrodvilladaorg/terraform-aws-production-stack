@@ -9,3 +9,11 @@ output "public_subnets" {
 output "private_subnets" {
   value = module.networking.private_subnet_ids
 }
+
+//Output ALB
+
+output "alb_dns_name" {
+  value = module.alb.alb_dns_name
+}
+
+
