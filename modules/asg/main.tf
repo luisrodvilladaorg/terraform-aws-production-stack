@@ -54,18 +54,28 @@ resource "aws_launch_template" "this" {
 
   vpc_security_group_ids = [aws_security_group.asg.id]
 
+  iam_instance_profile {
+    name = var.instance_profile_name
+  }
+
   instance_market_options {
     market_type = "spot"
   }
 
   user_data = base64encode(<<-EOF
-    #!/bin/bash
-    yum update -y
-    amazon-linux-extras install nginx1 -y
-    systemctl enable nginx
-    systemctl start nginx
-    echo "<h1>ASG instance $(hostname)</h1>" > /usr/share/nginx/html/index.html
-  EOF
+#!/bin/bash
+yum update -y
+yum install -y awscli
+amazon-linux-extras install nginx1 -y
+
+systemctl enable nginx
+systemctl start nginx
+
+rm -rf /usr/share/nginx/html/*
+aws s3 sync s3://terraform-aws-stack-dev-static/ /usr/share/nginx/html/
+
+systemctl restart nginx
+EOF
   )
 
   tag_specifications {

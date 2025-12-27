@@ -35,3 +35,7 @@ variable "max_size" {
   type    = number
   default = 3
 }
+
+variable "instance_profile_name" {
+  type = string
+}

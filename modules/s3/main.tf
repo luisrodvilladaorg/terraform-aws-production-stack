@@ -43,3 +43,16 @@ resource "aws_s3_bucket_policy" "alb_logs" {
     ]
   })
 }
+
+
+//Upload all files from page static to s3
+
+resource "aws_s3_object" "static_files" {
+  for_each = fileset(var.static_site_path, "**/*")
+
+  bucket = aws_s3_bucket.static.id
+  key    = each.value
+  source = "${var.static_site_path}/${each.value}"
+
+  etag = filemd5("${var.static_site_path}/${each.value}")
+}

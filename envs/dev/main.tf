@@ -27,6 +27,13 @@ module "networking" {
 
 //Called module ASG
 
+module "iam" {
+  source = "../../modules/iam"
+
+  project_name = "terraform-aws-stack"
+  environment  = "dev"
+}
+
 module "asg" {
   source = "../../modules/asg"
 
@@ -36,13 +43,24 @@ module "asg" {
   vpc_id     = module.networking.vpc_id
   subnet_ids = module.networking.public_subnet_ids
 
-  instance_type    = "t3.micro"
-  desired_capacity = 1
-  min_size         = 1
-  max_size         = 3
+  instance_type         = "t3.micro"
+  desired_capacity      = 2
+  min_size              = 1
+  max_size              = 3
+  instance_profile_name = module.iam.instance_profile_name
 }
 
-//Called ALB
+
+
+module "s3" {
+  source = "../../modules/s3"
+
+  project_name = "terraform-aws-stack"
+  environment  = "dev"
+
+  force_destroy    = true
+  static_site_path = "${path.root}/../../state-site"
+}
 
 module "alb" {
   source = "../../modules/alb"
@@ -53,16 +71,5 @@ module "alb" {
   vpc_id               = module.networking.vpc_id
   public_subnet_ids    = module.networking.public_subnet_ids
   asg_name             = module.asg.asg_name
-  alb_logs_bucket_name = module.s3.alb_logs_bucket_name //Access to logs ALB->Bucket
-}
-
-// Calle module S3
-
-module "s3" {
-  source = "../../modules/s3"
-
-  project_name = "terraform-aws-stack"
-  environment  = "dev"
-
-  force_destroy = true
+  alb_logs_bucket_name = module.s3.alb_logs_bucket_name
 }
