@@ -74,3 +74,19 @@ module "alb" {
   asg_name             = module.asg.asg_name
   alb_logs_bucket_name = module.s3.alb_logs_bucket_name
 }
+
+//Called module RDS
+
+module "rds" {
+  source = "../../modules/rds"
+
+  project_name = "terraform-aws-stack"
+  environment  = "dev"
+
+  vpc_id             = module.networking.vpc_id
+  private_subnet_ids = module.networking.private_subnet_ids
+
+  db_name     = "appdb"
+  db_username = "appuser"
+  db_password = "ChangeMe123!"
+}
