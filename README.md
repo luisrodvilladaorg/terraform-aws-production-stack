@@ -55,7 +55,9 @@ The platform includes **observability**, **access logging**, and **cost-aware de
 
 ## 🔄 Deployment Flow (End-to-End)
 
-A single command:
+06/01
+RDS working
+Web static working
+Next step backend
 
-```bash
-terraform apply
+

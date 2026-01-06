@@ -24,7 +24,14 @@ resource "aws_security_group" "asg" {
     protocol        = "tcp"
     security_groups = [var.alb_security_group_id]
   }
-
+  //SSH for testing
+  ingress {
+    description = "SSH from my IP"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
   egress {
     from_port   = 0
