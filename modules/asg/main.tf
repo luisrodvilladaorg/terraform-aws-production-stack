@@ -74,35 +74,59 @@ exec > >(tee /var/log/user-data.log | logger -t user-data) 2>&1
 echo "=== USER DATA START ==="
 date
 
-# System update
+# Update system
 yum update -y
+
+# Install awscli (needed for S3)
+yum install -y awscli
 
 # Install nginx
 amazon-linux-extras install nginx1 -y
+systemctl enable nginx
+
+# Sync static site
 rm -rf /usr/share/nginx/html/*
 aws s3 sync s3://terraform-aws-stack-dev-static/ /usr/share/nginx/html/
-systemctl enable nginx
-systemctl start nginx
 
-# Install Node.js (Amazon Linux 2 compatible)
+# Install Node.js 16 (Amazon Linux 2 compatible)
 curl -fsSL https://rpm.nodesource.com/setup_16.x | bash -
 yum install -y nodejs
 
 node -v
+npm -v
 
-# Create backend app
+# Backend setup
 mkdir -p /opt/backend
+
 cat << 'APP' > /opt/backend/index.js
 const express = require("express");
 const os = require("os");
+const { Pool } = require("pg");
 
 const app = express();
 
+const pool = new Pool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: 5432,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
 app.get("/api/ping", (req, res) => {
-  res.json({
-    status: "ok",
-    host: os.hostname()
-  });
+  res.json({ status: "ok", host: os.hostname() });
+});
+
+app.get("/api/ping-db", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT NOW()");
+    res.json({ status: "ok", time: result.rows[0].now });
+  } catch (err) {
+    res.status(500).json({ status: "error", message: err.message });
+  }
 });
 
 app.listen(3000, () => {
@@ -112,10 +136,30 @@ APP
 
 cd /opt/backend
 npm init -y
-npm install express
+npm install express pg
 
-# Start backend
-nohup node index.js > /opt/backend/app.log 2>&1 &
+# systemd backend service
+cat << 'SERVICE' > /etc/systemd/system/backend.service
+[Unit]
+Description=Node Backend
+After=network.target
+
+[Service]
+Environment=DB_HOST=${var.db_host}
+Environment=DB_USER=${var.db_user}
+Environment=DB_PASSWORD=${var.db_password}
+Environment=DB_NAME=${var.db_name}
+ExecStart=/usr/bin/node /opt/backend/index.js
+WorkingDirectory=/opt/backend
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+SERVICE
+
+systemctl daemon-reload
+systemctl enable backend
+systemctl start backend
 
 # Nginx reverse proxy
 cat << 'NGINX' > /etc/nginx/conf.d/backend.conf
@@ -137,6 +181,7 @@ echo "=== USER DATA END ==="
 date
 EOF
   )
+
 
   tag_specifications {
     resource_type = "instance"

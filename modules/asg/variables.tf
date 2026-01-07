@@ -44,3 +44,24 @@ variable "alb_security_group_id" {
   description = "Security group ID of the ALB"
   type        = string
 }
+
+//Variable  ASG to Database
+
+variable "db_host" {
+  type = string
+}
+
+variable "db_name" {
+  type = string
+}
+
+variable "db_user" {
+  type = string
+}
+
+variable "db_password" {
+  type      = string
+  sensitive = true
+}
+
+

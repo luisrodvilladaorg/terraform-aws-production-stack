@@ -49,6 +49,12 @@ module "asg" {
   max_size              = 3
   instance_profile_name = module.iam.instance_profile_name
   alb_security_group_id = module.alb.alb_security_group_id
+
+  //Variables for database
+  db_host     = module.rds.endpoint
+  db_name     = "appdb"
+  db_user     = "appuser"
+  db_password = "ChangeMe123!"
 }
 
 
