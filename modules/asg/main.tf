@@ -63,19 +63,78 @@ resource "aws_launch_template" "this" {
     market_type = "spot"
   }
 
+
+
   user_data = base64encode(<<-EOF
 #!/bin/bash
-yum update -y
-yum install -y awscli
-amazon-linux-extras install nginx1 -y
+set -e
 
+exec > >(tee /var/log/user-data.log | logger -t user-data) 2>&1
+
+echo "=== USER DATA START ==="
+date
+
+# System update
+yum update -y
+
+# Install nginx
+amazon-linux-extras install nginx1 -y
+rm -rf /usr/share/nginx/html/*
+aws s3 sync s3://terraform-aws-stack-dev-static/ /usr/share/nginx/html/
 systemctl enable nginx
 systemctl start nginx
 
-rm -rf /usr/share/nginx/html/*
-aws s3 sync s3://terraform-aws-stack-dev-static/ /usr/share/nginx/html/
+# Install Node.js (Amazon Linux 2 compatible)
+curl -fsSL https://rpm.nodesource.com/setup_16.x | bash -
+yum install -y nodejs
 
+node -v
+
+# Create backend app
+mkdir -p /opt/backend
+cat << 'APP' > /opt/backend/index.js
+const express = require("express");
+const os = require("os");
+
+const app = express();
+
+app.get("/api/ping", (req, res) => {
+  res.json({
+    status: "ok",
+    host: os.hostname()
+  });
+});
+
+app.listen(3000, () => {
+  console.log("Backend running on port 3000");
+});
+APP
+
+cd /opt/backend
+npm init -y
+npm install express
+
+# Start backend
+nohup node index.js > /opt/backend/app.log 2>&1 &
+
+# Nginx reverse proxy
+cat << 'NGINX' > /etc/nginx/conf.d/backend.conf
+server {
+  listen 80;
+
+  location /api/ {
+    proxy_pass http://127.0.0.1:3000;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+  }
+}
+NGINX
+
+rm -f /etc/nginx/conf.d/default.conf
 systemctl restart nginx
+
+echo "=== USER DATA END ==="
+date
 EOF
   )
 
