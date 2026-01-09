@@ -105,6 +105,8 @@ Security best practices
 Production‑ready folder structure
 
 It is intentionally designed to reflect how modern companies structure their cloud infrastructure.
+
+
                            ┌────────────────────────────┐
                            │            User            │
                            │        Browser / Client    │
@@ -112,16 +114,16 @@ It is intentionally designed to reflect how modern companies structure their clo
                                            │
                                            ▼
                            ┌────────────────────────────┐
-                           │      Application Load       │
-                           │      Balancer (ALB)         │
+                           │      Application Load      │
+                           │      Balancer (ALB)        │
                            └───────────────┬────────────┘
                                            │
                  ┌─────────────────────────┼─────────────────────────┐
                  │                         │                         │
                  ▼                         ▼                         ▼
      ┌────────────────────┐   ┌────────────────────┐   ┌────────────────────┐
-     │   Auto Scaling       │   │   Auto Scaling       │   │    Legacy EC2      │
-     │   Group (Spot EC2)   │   │   Group (Spot EC2)   │   │   (On-Demand)      │
+     │   Auto Scaling       │   │   Auto Scaling       │   │    Legacy EC2  │
+     │   Group (Spot EC2)   │   │   Group (Spot EC2)   │   │   (On-Demand)  │
      └───────────┬────────┘   └───────────┬────────┘   └───────────┬────────┘
                  │                         │                         │
                  ├───────────────┬─────────┴─────────┬───────────────┤
@@ -133,26 +135,30 @@ It is intentionally designed to reflect how modern companies structure their clo
                        └────────────────────┘  └────────────────────┘
 
                  ┌──────────────────────────────────────────────────────────┐
-                 │                         AWS Services                       │
+                 │                         AWS Services                     │
                  │                                                          │
                  │   ┌──────────────┐   ┌──────────────────┐               │
-                 │   │  S3 Bucket   │   │  SSM Parameter    │               │
-                 │   │ Static Web   │   │  Store            │               │
+                 │   │  S3 Bucket   │   │  SSM Parameter    │              │
+                 │   │ Static Web   │   │  Store            │              │
                  │   └──────┬───────┘   └─────────┬────────┘               │
                  │          │                     │                        │
                  │          ▼                     ▼                        │
                  │   ┌──────────────┐   ┌──────────────────┐               │
-                 │   │ EC2 / ASG    │   │   EC2 / ASG       │               │
+                 │   │ EC2 / ASG    │   │   EC2 / ASG       │              │
                  │   │ Read Web     │   │   Read DB Creds  │               │
                  │   └──────────────┘   └──────────────────┘               │
-                 │                                                          │
+                 │                                                         │
                  │   ┌──────────────────┐   ┌──────────────────────────┐  │
-                 │   │ Terraform State  │   │ DynamoDB State Locks      │  │
+                 │   │ Terraform State  │   │ DynamoDB State Locks     │  │
                  │   │ S3 Backend       │   │                          │  │
                  │   └─────────┬────────┘   └─────────┬────────────────┘  │
                  │             │                      │                   │
                  │             ▼                      ▼                   │
                  │   ┌──────────────────┐   ┌──────────────────────────┐  │
-                 │   │   Terraform CLI  │──▶│   Locking / State Mgmt    │  │
+                 │   │   Terraform CLI  │──▶│   Locking / State Mgmt  │  │
                  │   └──────────────────┘   └──────────────────────────┘  │
                  └──────────────────────────────────────────────────────────┘
+
+
+
+                        
