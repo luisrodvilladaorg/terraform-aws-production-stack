@@ -9,6 +9,7 @@
 crash.log
 crash.*.log
 node_modules/
+backend-artifact/node_modules
 ##################################
 # Terraform Backend Lock
 ##################################
