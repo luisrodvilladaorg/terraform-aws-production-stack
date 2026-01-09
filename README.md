@@ -70,23 +70,6 @@ envs/
 
 This structure mirrors real enterprise Terraform repositories and supports long‑term scalability.
 
-User
- |
- v
-[ ALB ]
- |        \
- v         v
-[ ASG ]   [ EC2 ]
-   |         |
-   +----> [ RDS ]
-   |
-   +----> [ S3 Web ]
-
-Terraform
- |
- v
-[ S3 State ] --- [ DynamoDB Lock ]
-
 
 ⚙️ How to Deploy
 1. Choose an environment
@@ -122,3 +105,54 @@ Security best practices
 Production‑ready folder structure
 
 It is intentionally designed to reflect how modern companies structure their cloud infrastructure.
+                           ┌────────────────────────────┐
+                           │            User            │
+                           │        Browser / Client    │
+                           └───────────────┬────────────┘
+                                           │
+                                           ▼
+                           ┌────────────────────────────┐
+                           │      Application Load       │
+                           │      Balancer (ALB)         │
+                           └───────────────┬────────────┘
+                                           │
+                 ┌─────────────────────────┼─────────────────────────┐
+                 │                         │                         │
+                 ▼                         ▼                         ▼
+     ┌────────────────────┐   ┌────────────────────┐   ┌────────────────────┐
+     │   Auto Scaling       │   │   Auto Scaling       │   │    Legacy EC2      │
+     │   Group (Spot EC2)   │   │   Group (Spot EC2)   │   │   (On-Demand)      │
+     └───────────┬────────┘   └───────────┬────────┘   └───────────┬────────┘
+                 │                         │                         │
+                 ├───────────────┬─────────┴─────────┬───────────────┤
+                                 │                   │
+                                 ▼                   ▼
+                       ┌────────────────────┐  ┌────────────────────┐
+                       │   RDS PostgreSQL    │  │   RDS PostgreSQL    │
+                       │  (Private Subnets) │  │  (Private Subnets) │
+                       └────────────────────┘  └────────────────────┘
+
+                 ┌──────────────────────────────────────────────────────────┐
+                 │                         AWS Services                       │
+                 │                                                          │
+                 │   ┌──────────────┐   ┌──────────────────┐               │
+                 │   │  S3 Bucket   │   │  SSM Parameter    │               │
+                 │   │ Static Web   │   │  Store            │               │
+                 │   └──────┬───────┘   └─────────┬────────┘               │
+                 │          │                     │                        │
+                 │          ▼                     ▼                        │
+                 │   ┌──────────────┐   ┌──────────────────┐               │
+                 │   │ EC2 / ASG    │   │   EC2 / ASG       │               │
+                 │   │ Read Web     │   │   Read DB Creds  │               │
+                 │   └──────────────┘   └──────────────────┘               │
+                 │                                                          │
+                 │   ┌──────────────────┐   ┌──────────────────────────┐  │
+                 │   │ Terraform State  │   │ DynamoDB State Locks      │  │
+                 │   │ S3 Backend       │   │                          │  │
+                 │   └─────────┬────────┘   └─────────┬────────────────┘  │
+                 │             │                      │                   │
+                 │             ▼                      ▼                   │
+                 │   ┌──────────────────┐   ┌──────────────────────────┐  │
+                 │   │   Terraform CLI  │──▶│   Locking / State Mgmt    │  │
+                 │   └──────────────────┘   └──────────────────────────┘  │
+                 └──────────────────────────────────────────────────────────┘
