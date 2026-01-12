@@ -1,6 +1,7 @@
 ##################################
 # Terraform
 ##################################
+Apuntes
 .terraform/
 *.tfstate
 *.tfstate.*
@@ -15,7 +16,7 @@ backend-artifact
 # Terraform Backend Lock
 ##################################
 .terraform.lock.hcl
-
+.secrets
 ##################################
 # Environment files
 ##################################
