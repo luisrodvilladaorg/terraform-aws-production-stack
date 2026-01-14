@@ -1,0 +1,54 @@
+name: Terraform CI
+
+# 👉 Este workflow se ejecuta automáticamente
+#    cuando hay cambios en el repo
+on:
+    pull_request:
+    push:
+        branches:
+            - main
+
+jobs:
+    terraform-ci:
+        name: Terraform Validation
+        runs-on: ubuntu-latest
+
+        # 👉 Matrix para ejecutar el CI en varios entornos
+        #    (mismo código, distinto contexto)
+        strategy:
+            matrix:
+                env: [dev, prod]
+
+        defaults:
+            run:
+                shell: bash
+
+        steps:
+            # 1️⃣ Descargar el código del repo
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            # 2️⃣ Instalar Terraform en el runner
+            - name: Setup Terraform
+              uses: hashicorp/setup-terraform@v3
+
+            # 3️⃣ Inicializar Terraform (backend + módulos)
+            - name: Terraform Init
+              run: terraform init -input=false
+              working-directory: envs/${{ matrix.env }}
+
+            # 4️⃣ Formatear código (estilo estándar)
+            # ❌ Falla si alguien no ejecutó terraform fmt
+            - name: Terraform Format Check
+              run: terraform fmt -check -recursive
+              working-directory: envs/${{ matrix.env }}
+
+            # 5️⃣ Validar sintaxis y referencias
+            - name: Terraform Validate
+              run: terraform validate
+              working-directory: envs/${{ matrix.env }}
+
+            # 6️⃣ Calcular cambios SIN aplicarlos
+            - name: Terraform Plan
+              run: terraform plan -input=false
+              working-directory: envs/${{ matrix.env }}
