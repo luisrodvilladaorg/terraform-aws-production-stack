@@ -1,6 +1,6 @@
 #Pendiente revisar este workflow, teniendo en cuenta que es el unico y primero en CI4.
 
-name: Terraform CI-v1
+name: Terraform CI-v3
 
 on:
   pull_request:
