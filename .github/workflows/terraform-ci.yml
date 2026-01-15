@@ -1,54 +1,39 @@
-name: Terraform CI
+#Pendiente revisar este workflow, teniendo en cuenta que es el unico y primero en CI
 
-# 👉 Este workflow se ejecuta automáticamente
-#    cuando hay cambios en el repo
+name: Terraform CI-v1
+
 on:
-    pull_request:
-    push:
-        branches:
-            - main
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
 
 jobs:
-    terraform-ci:
-        name: Terraform Validation
-        runs-on: ubuntu-latest
+  terraform-ci:
+    name: Terraform CI
+    runs-on: self-hosted # 🔥 CLAVE
+    strategy:
+      matrix:
+        env: [dev]
 
-        # 👉 Matrix para ejecutar el CI en varios entornos
-        #    (mismo código, distinto contexto)
-        strategy:
-            matrix:
-                env: [dev, prod]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-        defaults:
-            run:
-                shell: bash
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
-        steps:
-            # 1️⃣ Descargar el código del repo
-            - name: Checkout repository
-              uses: actions/checkout@v4
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
 
-            # 2️⃣ Instalar Terraform en el runner
-            - name: Setup Terraform
-              uses: hashicorp/setup-terraform@v3
+      - name: Terraform Init
+        run: terraform init -input=false
+        working-directory: envs/${{ matrix.env }}
 
-            # 3️⃣ Inicializar Terraform (backend + módulos)
-            - name: Terraform Init
-              run: terraform init -input=false
-              working-directory: envs/${{ matrix.env }}
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: envs/${{ matrix.env }}
 
-            # 4️⃣ Formatear código (estilo estándar)
-            # ❌ Falla si alguien no ejecutó terraform fmt
-            - name: Terraform Format Check
-              run: terraform fmt -check -recursive
-              working-directory: envs/${{ matrix.env }}
-
-            # 5️⃣ Validar sintaxis y referencias
-            - name: Terraform Validate
-              run: terraform validate
-              working-directory: envs/${{ matrix.env }}
-
-            # 6️⃣ Calcular cambios SIN aplicarlos
-            - name: Terraform Plan
-              run: terraform plan -input=false
-              working-directory: envs/${{ matrix.env }}
+      - name: Terraform Plan
+        run: terraform plan -input=false
+        working-directory: envs/${{ matrix.env }}
