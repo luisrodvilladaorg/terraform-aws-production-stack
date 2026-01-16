@@ -8,31 +8,45 @@ on:
 
 jobs:
   terraform-ci:
-    name: Terraform CI
+    name: Terraform CI (dev)
     runs-on: self-hosted
-    strategy:
-      matrix:
-        env: [dev] # o [dev, stage, prod]
+
+    defaults:
+      run:
+        shell: bash
 
     steps:
+      # 1️⃣ Descarga el código del repo
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2️⃣ Instala Terraform en el runner
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.6
 
+      # 3️⃣ Verifica que AWS credentials funcionan
+      # (MUY IMPORTANTE para confirmar que el runner está bien configurado)
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
+
+      # 4️⃣ Inicializa Terraform (backend + módulos)
+      - name: Terraform Init
+        working-directory: envs/dev
+        run: terraform init -input=false
+
+      # 5️⃣ Comprueba formato del código
       - name: Terraform Format Check
+        working-directory: envs/dev
         run: terraform fmt -check -recursive
-        working-directory: envs/${{ matrix.env }}
 
-      - name: Terraform Init (local backend)
-        run: terraform init -backend=false
-        working-directory: envs/${{ matrix.env }}
-
+      # 6️⃣ Valida configuración Terraform
       - name: Terraform Validate
+        working-directory: envs/dev
         run: terraform validate
-        working-directory: envs/${{ matrix.env }}
 
-      - name: Terraform Plan (local)
+      # 7️⃣ Genera plan (NO aplica cambios)
+      - name: Terraform Plan
+        working-directory: envs/dev
         run: terraform plan -input=false
-        working-directory: envs/${{ matrix.env }}
