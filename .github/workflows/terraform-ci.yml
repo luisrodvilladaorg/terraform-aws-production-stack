@@ -1,7 +1,6 @@
 name: Terraform CI
 
 on:
-  # CI se ejecuta en PRs y pushes a main
   pull_request:
     branches: [main]
   push:
@@ -10,42 +9,30 @@ on:
 jobs:
   terraform-ci:
     name: Terraform CI
-    runs-on: self-hosted # Runner en tu VM
+    runs-on: self-hosted
     strategy:
       matrix:
-        env: [dev] # Preparado para multi-entorno
+        env: [dev] # o [dev, stage, prod]
 
     steps:
-      # 1️⃣ Descargar el código
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Instalar Terraform en el runner
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      # 3️⃣ Verificar identidad AWS (debug y confianza)
-      - name: Verify AWS identity
-        run: aws sts get-caller-identity
-
-      # 4️⃣ Comprobar formato Terraform (NO corrige, solo falla)
       - name: Terraform Format Check
         run: terraform fmt -check -recursive
         working-directory: envs/${{ matrix.env }}
 
-      # 5️⃣ Inicializar Terraform (backend + providers)
-      - name: Terraform Init
-        run: terraform init -input=false
+      - name: Terraform Init (local backend)
+        run: terraform init -backend=false
         working-directory: envs/${{ matrix.env }}
 
-      # 6️⃣ Validar configuración
       - name: Terraform Validate
         run: terraform validate
         working-directory: envs/${{ matrix.env }}
 
-      # 7️⃣ Generar plan (sin aplicar cambios)
-      - name: Terraform Plan
+      - name: Terraform Plan (local)
         run: terraform plan -input=false
         working-directory: envs/${{ matrix.env }}
-
-        # This CI workflow validates the Terraform configuration on every push or pull request to the main branch. It ensures that AWS credentials are valid, initializes the Terraform environment, checks the syntax and structure of the configuration, and generates a plan to confirm that the infrastructure can be created or updated without errors. It acts as a safety gate to guarantee that all Terraform changes are consistent, secure, and ready to be applied.
