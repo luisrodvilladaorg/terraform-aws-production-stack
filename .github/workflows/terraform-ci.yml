@@ -47,3 +47,5 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -input=false
         working-directory: envs/${{ matrix.env }}
+
+        # This CI workflow validates the Terraform configuration on every push or pull request to the main branch. It ensures that AWS credentials are valid, initializes the Terraform environment, checks the syntax and structure of the configuration, and generates a plan to confirm that the infrastructure can be created or updated without errors. It acts as a safety gate to guarantee that all Terraform changes are consistent, secure, and ready to be applied.

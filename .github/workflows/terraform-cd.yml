@@ -1,0 +1,38 @@
+name: Terraform CD (Apply)
+
+on:
+    workflow_dispatch: # 👈 ejecución manual desde GitHub UI
+        inputs:
+            environment:
+                description: "Environment to deploy"
+                required: true
+                default: "dev"
+
+jobs:
+    terraform-apply:
+        name: Terraform Apply
+        runs-on: self-hosted # tu VM
+        environment: production # 👈 habilita approvals si quieres
+
+        steps:
+            # 1️⃣ Descargar código
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            # 2️⃣ Instalar Terraform
+            - name: Setup Terraform
+              uses: hashicorp/setup-terraform@v3
+
+            # 3️⃣ Ver identidad AWS (control)
+            - name: Verify AWS identity
+              run: aws sts get-caller-identity
+
+            # 4️⃣ Terraform Init
+            - name: Terraform Init
+              run: terraform init -input=false
+              working-directory: envs/${{ inputs.environment }}
+
+            # 5️⃣ Terraform Apply (MANUAL + sin auto-approve)
+            - name: Terraform Apply
+              run: terraform apply
+              working-directory: envs/${{ inputs.environment }}
