@@ -107,6 +107,44 @@ Production‑ready folder structure
 It is intentionally designed to reflect how modern companies structure their cloud infrastructure.
 
 
+🔄 CI/CD Workflow (Terraform)
+
+This project uses GitHub Actions with a self-hosted runner to implement a clean and production-oriented CI/CD workflow for Terraform.
+
+The pipeline is intentionally split into three responsibilities to avoid accidental infrastructure changes and to follow real enterprise practices.
+
+📁 Workflow
+
+.github/workflows/terraform-ci.yml
+
+Continuous Integration (CI)
+
+Trigger
+
+On push and pull_request to main
+
+Purpose
+
+Validate Terraform code quality
+
+Ensure changes are safe before deployment
+
+Steps
+
+terraform init
+
+terraform validate
+
+terraform plan
+
+❌ No infrastructure changes are applied during CI.
+
+📁 Workflow
+
+.github/workflows/terraform-cd.yml
+
+
+
                            ┌────────────────────────────┐
                            │            User            │
                            │        Browser / Client    │
