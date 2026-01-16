@@ -1,5 +1,7 @@
 🌐 Terraform AWS Production Stack
 
+Sample1
+
 A fully modular, production‑ready AWS infrastructure built with Terraform
 This project provisions a complete production‑grade AWS architecture using Terraform, following industry best practices for modularity, scalability, security, and maintainability.
 It is designed to simulate the type of infrastructure used in real companies, making it ideal for DevOps/Cloud Engineering portfolios.
@@ -142,6 +144,40 @@ terraform plan
 📁 Workflow
 
 .github/workflows/terraform-cd.yml
+
+🧨 Infrastructure Destroy (Manual)
+
+Trigger
+
+Manual execution only (workflow_dispatch)
+
+Purpose
+
+Safely destroy infrastructure when no longer needed
+
+Ideal for development and testing environments
+
+Why separate workflow?
+
+Destroy is a dangerous operation
+
+Must never run automatically on push
+
+📁 Workflow:
+
+.github/workflows/terraform-destroy.yml
+
+🧠 Design Principles
+
+Infrastructure is fully reproducible
+
+No manual changes in AWS Console
+
+Backend state stored remotely (S3 + DynamoDB)
+
+Clear separation between CI, CD, and Destroy
+
+Follows patterns used in real production environments
 
 
 
