@@ -100,7 +100,7 @@ Load balancing and autoscaling
 
 Remote state management
 
-Security best practices
+Best practices for security
 
 Production‑ready folder structure
 
