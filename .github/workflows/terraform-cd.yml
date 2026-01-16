@@ -1,4 +1,4 @@
-name: Terraform CD (Apply-Manually)
+name: Terraform CD (Apply-Manually-v1)
 
 on:
     workflow_dispatch: # 👈 ejecución manual desde GitHub UI
