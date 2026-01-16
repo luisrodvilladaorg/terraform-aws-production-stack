@@ -1,6 +1,6 @@
 🌐 Terraform AWS Production Stack
 
-Sample1
+Sample2
 
 A fully modular, production‑ready AWS infrastructure built with Terraform
 This project provisions a complete production‑grade AWS architecture using Terraform, following industry best practices for modularity, scalability, security, and maintainability.
