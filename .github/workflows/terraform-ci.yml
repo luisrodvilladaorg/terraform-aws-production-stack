@@ -1,8 +1,7 @@
-#Pendiente revisar este workflow, teniendo en cuenta que es el unico y primero en CI4.
-
-name: Terraform CI-v3
+name: Terraform CI
 
 on:
+  # CI se ejecuta en PRs y pushes a main
   pull_request:
     branches: [main]
   push:
@@ -11,29 +10,40 @@ on:
 jobs:
   terraform-ci:
     name: Terraform CI
-    runs-on: self-hosted # 🔥 CLAVE
+    runs-on: self-hosted # Runner en tu VM
     strategy:
       matrix:
-        env: [dev]
+        env: [dev] # Preparado para multi-entorno
 
     steps:
+      # 1️⃣ Descargar el código
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2️⃣ Instalar Terraform en el runner
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      # 3️⃣ Verificar identidad AWS (debug y confianza)
       - name: Verify AWS identity
         run: aws sts get-caller-identity
 
+      # 4️⃣ Comprobar formato Terraform (NO corrige, solo falla)
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+        working-directory: envs/${{ matrix.env }}
+
+      # 5️⃣ Inicializar Terraform (backend + providers)
       - name: Terraform Init
         run: terraform init -input=false
         working-directory: envs/${{ matrix.env }}
 
+      # 6️⃣ Validar configuración
       - name: Terraform Validate
         run: terraform validate
         working-directory: envs/${{ matrix.env }}
 
+      # 7️⃣ Generar plan (sin aplicar cambios)
       - name: Terraform Plan
         run: terraform plan -input=false
         working-directory: envs/${{ matrix.env }}
