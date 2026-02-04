@@ -1,0 +1,185 @@
+Pendiente mañana separar estado, no puede ser que cada vez que haga t apply se me borren los certificados y mi route 53 se desconfigure.
+
+
+    sudo journalctl -u actions.runner.luisrodvilladaorg.vbox.service -f
+
+Pendiente ejecutar el workflow  terraform.yml
+
+
+    Cuando terraform apply hacer build y luego push en ECR de la imagen
+
+aws ecr get-login-password --region eu-west-3 \
+| docker login --username AWS --password-stdin \
+459566754179.dkr.ecr.eu-west-3.amazonaws.com
+
+cd ~/Documents/Terraform/terraform-aws-production-stack/docker
+
+docker build -t terraform-aws-stack-dev-backend .
+
+docker tag terraform-aws-stack-dev-backend:latest \
+459566754179.dkr.ecr.eu-west-3.amazonaws.com/terraform-aws-stack-dev-backend:latest
+
+docker push \
+459566754179.dkr.ecr.eu-west-3.amazonaws.com/terraform-aws-stack-dev-backend:latest
+
+aws ecr list-images \
+  --repository-name terraform-aws-stack-dev-backend \
+  --region eu-west-3
+
+aws ecs update-service \
+  --cluster terraform-aws-stack-dev-cluster \
+  --service terraform-aws-stack-dev-service \
+  --force-new-deployment \
+  --region eu-west-3
+
+
+    ARN del contenedor
+
+"arn:aws:ecs:eu-west-3:459566754179:task/terraform-aws-stack-dev-cluster/6833e66db42b4f938ce64df276b88d99",
+        "arn:aws:ecs:eu-west-3:459566754179:task/terraform-aws-stack-dev-cluster/461ff6718be44739bb0d1d1713471988"
+
+
+
+        Entrar en el contenedor
+  
+  Listar la task
+
+  aws ecs list-tasks \
+  --cluster terraform-aws-stack-dev-cluster \
+  --service-name terraform-aws-stack-dev-service \
+  --region eu-west-3
+
+aws ecs execute-command \
+  --cluster terraform-aws-stack-dev-cluster \
+  --task <TASK_ID> \
+  --container nginx \
+  --interactive \
+  --command "/bin/sh" \
+  --region eu-west-3
+
+
+
+
+        
+                                               TAREAS PENDIENTES
+
+1. README profesional + diagrama actualizado (impacto máximo)
+Tu proyecto ya es técnicamente sólido, pero un recruiter no lo sabe hasta que lo ve explicado.
+
+Incluye:
+
+Arquitectura completa (VPC, subnets, NAT, ALB, ASG, SGs, roles IAM)
+
+Flujo de despliegue
+
+Explicación de módulos
+
+Cómo ejecutar el proyecto
+
+Qué problema resuelve
+
+Qué buenas prácticas aplicas
+
+
+2. Reorganizar la estructura del repo para que sea “enterprise‑ready”
+
+/modules
+    /vpc
+    /subnets
+    /nat
+    /security
+    /alb
+    /asg
+    /ec2
+/envs
+    /prod
+    /dev
+/docs
+    architecture.png
+    decisions.md
+    variables.md
+
+    claridad
+
+modularidad
+
+madurez
+
+intención arquitectónica
+
+
+3. Añadir CI/CD para Terraform (fmt, validate, tflint, checkov)
+Esto es un diferenciador brutal.
+
+Pipeline recomendado:
+
+terraform fmt -check
+
+terraform validate
+
+tflint
+
+checkov
+
+terraform plan (solo lectura)
+
+
+4. Añadir Terratest (aunque sea mínimo)
+Muy pocos candidatos lo hacen, y te coloca en un nivel superior.
+
+Tests recomendados:
+
+La VPC se crea
+
+Las subnets tienen los tags correctos
+
+El ALB tiene listeners
+
+El ASG tiene el tamaño esperado
+
+Incluso 2–3 tests ya impresionan.
+
+5. Añadir documentación de variables y outputs
+Un archivo /docs/variables.md con:
+
+Variables por módulo
+
+Ejemplos
+
+Defaults
+
+Outputs explicados
+
+Esto ayuda a recruiters y a cualquier persona que revise tu repo.
+
+
+6. Añadir un módulo opcional de RDS o Aurora (si quieres subir de nivel)
+No es obligatorio, pero demuestra:
+
+networking avanzado
+
+SGs cruzados
+
+subnets privadas
+
+alta disponibilidad
+
+Si lo añades, tu proyecto pasa a ser infraestructura completa de producción.
+
+
+7. Añadir un Makefile para automatizar comandos
+
+make init
+make plan
+make apply
+make destroy
+
+
+9. Añadir tags consistentes en todos los recursos
+tags = {
+  Project = "wellnes-ops"
+  Environment = var.environment
+  Owner = "Luis Rodvillada"
+}
+
+

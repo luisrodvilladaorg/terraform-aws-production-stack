@@ -17,9 +17,15 @@ resource "aws_security_group" "alb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name = "${var.project_name}-${var.environment}-alb-sg"
-  }
+  tags = merge(
+    {
+      Name        = "${var.project_name}-${var.environment}-alb-sg"
+      Environment = var.environment
+      Project     = var.project_name
+      ManagedBy   = "Terraform"
+    },
+    var.tags
+  )
 }
 
 //ALB
@@ -38,9 +44,15 @@ resource "aws_lb" "this" {
     enabled = true
   }
 
-  tags = {
-    Name = "${var.project_name}-${var.environment}-alb"
-  }
+  tags = merge(
+    {
+      Name        = "${var.project_name}-${var.environment}-alb"
+      Environment = var.environment
+      Project     = var.project_name
+      ManagedBy   = "Terraform"
+    },
+    var.tags
+  )
 }
 
 
@@ -63,9 +75,15 @@ resource "aws_lb_target_group" "this" {
     unhealthy_threshold = 2
   }
 
-  tags = {
-    Name = "${var.project_name}-${var.environment}-tg"
-  }
+  tags = merge(
+    {
+      Name        = "${var.project_name}-${var.environment}-tg"
+      Environment = var.environment
+      Project     = var.project_name
+      ManagedBy   = "Terraform"
+    },
+    var.tags
+  )
 }
 
 

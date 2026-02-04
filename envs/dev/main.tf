@@ -52,9 +52,9 @@ module "asg" {
 
   //Variables for database
   db_host     = module.rds.endpoint
-  db_name     = "appdb"
-  db_user     = "appuser"
-  db_password = "ChangeMe123!"
+  db_name     = var.db_name
+  db_user     = var.db_user
+  db_password = var.db_password
 }
 
 
@@ -94,20 +94,7 @@ module "rds" {
 
   asg_security_group_id = module.asg.asg_security_group_id
 
-  db_name     = "appdb"
-  db_user     = "appuser"
-  db_password = "ChangeMe123!"
-}
-
-
-//Called Module ECR 
-
-
-
-module "ecr_backend" {
-  source = "../../modules/ecr"
-
-  project_name    = "terraform-aws-stack"
-  environment     = "dev"
-  repository_name = "backend"
+  db_name     = var.db_name
+  db_user     = var.db_user
+  db_password = var.db_password
 }

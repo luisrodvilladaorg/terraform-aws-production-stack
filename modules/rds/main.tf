@@ -17,11 +17,31 @@ resource "aws_security_group" "rds" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = merge(
+    {
+      Name        = "${var.project_name}-${var.environment}-rds-sg"
+      Environment = var.environment
+      Project     = var.project_name
+      ManagedBy   = "Terraform"
+    },
+    var.tags
+  )
 }
 
 resource "aws_db_subnet_group" "this" {
   name       = "${var.project_name}-${var.environment}-db-subnets"
   subnet_ids = var.private_subnet_ids
+
+  tags = merge(
+    {
+      Name        = "${var.project_name}-${var.environment}-db-subnets"
+      Environment = var.environment
+      Project     = var.project_name
+      ManagedBy   = "Terraform"
+    },
+    var.tags
+  )
 }
 
 resource "aws_db_instance" "this" {
@@ -43,6 +63,17 @@ resource "aws_db_instance" "this" {
 
   publicly_accessible = false
   skip_final_snapshot = true
+
+  tags = merge(
+    {
+      Name        = "${var.project_name}-${var.environment}-postgres"
+      Environment = var.environment
+      Project     = var.project_name
+      ManagedBy   = "Terraform"
+      Engine      = "postgres"
+    },
+    var.tags
+  )
 }
 
 

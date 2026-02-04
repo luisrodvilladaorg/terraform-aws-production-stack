@@ -40,9 +40,15 @@ resource "aws_security_group" "asg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name = "${var.project_name}-${var.environment}-asg-sg"
-  }
+  tags = merge(
+    {
+      Name        = "${var.project_name}-${var.environment}-asg-sg"
+      Environment = var.environment
+      Project     = var.project_name
+      ManagedBy   = "Terraform"
+    },
+    var.tags
+  )
 }
 
 
@@ -186,11 +192,26 @@ EOF
   tag_specifications {
     resource_type = "instance"
 
-    tags = {
-      Name        = "${var.project_name}-${var.environment}-asg-instance"
-      Environment = var.environment
-    }
+    tags = merge(
+      {
+        Name        = "${var.project_name}-${var.environment}-asg-instance"
+        Environment = var.environment
+        Project     = var.project_name
+        ManagedBy   = "Terraform"
+      },
+      var.tags
+    )
   }
+
+  tags = merge(
+    {
+      Name        = "${var.project_name}-${var.environment}-lt"
+      Environment = var.environment
+      Project     = var.project_name
+      ManagedBy   = "Terraform"
+    },
+    var.tags
+  )
 }
 
 //ASG
@@ -214,6 +235,33 @@ resource "aws_autoscaling_group" "this" {
     key                 = "Name"
     value               = "${var.project_name}-${var.environment}-asg"
     propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "Environment"
+    value               = var.environment
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "Project"
+    value               = var.project_name
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "ManagedBy"
+    value               = "Terraform"
+    propagate_at_launch = true
+  }
+
+  dynamic "tag" {
+    for_each = var.tags
+    content {
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
+    }
   }
 }
 

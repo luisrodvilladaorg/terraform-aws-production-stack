@@ -1,11 +1,14 @@
 variable "project_name" {
-  type = string
+  description = "Name of the project for resource naming and tagging"
+  type        = string
 }
 
 variable "environment" {
-  type = string
+  description = "Environment name (dev, staging, prod)"
+  type        = string
 }
 
 variable "repository_name" {
-  type = string
+  description = "Name of the ECR repository"
+  type        = string
 }

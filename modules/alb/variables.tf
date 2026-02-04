@@ -1,9 +1,21 @@
 variable "project_name" {
-  type = string
+  description = "Name of the project for resource naming and tagging"
+  type        = string
 }
 
 variable "environment" {
-  type = string
+  description = "Environment name (dev, staging, prod)"
+  type        = string
+  validation {
+    condition     = contains(["dev", "staging", "prod"], var.environment)
+    error_message = "Environment must be dev, staging or prod."
+  }
+}
+
+variable "tags" {
+  description = "Additional tags to apply to all resources"
+  type        = map(string)
+  default     = {}
 }
 
 variable "vpc_id" {
