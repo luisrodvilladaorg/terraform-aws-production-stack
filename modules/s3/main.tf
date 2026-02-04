@@ -3,10 +3,16 @@ resource "aws_s3_bucket" "static" {
 
   force_destroy = var.force_destroy
 
-  tags = {
-    Name        = "${var.project_name}-${var.environment}-static"
-    Environment = var.environment
-  }
+  tags = merge(
+    {
+      Name        = "${var.project_name}-${var.environment}-static"
+      Environment = var.environment
+      Project     = var.project_name
+      Purpose     = "StaticContent"
+      ManagedBy   = "Terraform"
+    },
+    var.tags
+  )
 }
 
 //Bucket for access logs ALB
@@ -16,10 +22,16 @@ resource "aws_s3_bucket" "alb_logs" {
 
   force_destroy = var.force_destroy
 
-  tags = {
-    Name        = "${var.project_name}-${var.environment}-alb-logs"
-    Environment = var.environment
-  }
+  tags = merge(
+    {
+      Name        = "${var.project_name}-${var.environment}-alb-logs"
+      Environment = var.environment
+      Project     = var.project_name
+      Purpose     = "ALBLogs"
+      ManagedBy   = "Terraform"
+    },
+    var.tags
+  )
 }
 
 //Policy to permit logs from ALB

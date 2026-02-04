@@ -43,3 +43,6 @@ Thumbs.db
 ##################################
 docs/**/*.zip
 docs/**/*.tar.gz
+.secrets
+Apuntes
+*.tfplan

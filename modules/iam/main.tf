@@ -13,6 +13,16 @@ resource "aws_iam_role" "ec2" {
       Action = "sts:AssumeRole"
     }]
   })
+
+  tags = merge(
+    {
+      Name        = "${var.project_name}-${var.environment}-ec2-role"
+      Environment = var.environment
+      Project     = var.project_name
+      ManagedBy   = "Terraform"
+    },
+    var.tags
+  )
 }
 
 resource "aws_iam_role_policy" "s3_read" {

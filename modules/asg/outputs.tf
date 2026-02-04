@@ -1,7 +1,29 @@
+output "asg_id" {
+  description = "ID of the Auto Scaling Group"
+  value       = aws_autoscaling_group.this.id
+}
+
 output "asg_name" {
-  value = aws_autoscaling_group.this.name
+  description = "Name of the Auto Scaling Group"
+  value       = aws_autoscaling_group.this.name
+}
+
+output "asg_arn" {
+  description = "ARN of the Auto Scaling Group"
+  value       = aws_autoscaling_group.this.arn
 }
 
 output "asg_security_group_id" {
-  value = aws_security_group.asg.id
+  description = "ID of the ASG security group"
+  value       = aws_security_group.asg.id
+}
+
+output "launch_template_id" {
+  description = "ID of the launch template"
+  value       = aws_launch_template.this.id
+}
+
+output "launch_template_latest_version" {
+  description = "Latest version of the launch template"
+  value       = aws_launch_template.this.latest_version
 }

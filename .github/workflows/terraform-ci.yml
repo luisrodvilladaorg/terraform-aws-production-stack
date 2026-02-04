@@ -1,4 +1,4 @@
-name: Terraform CI
+name: Terraform CI - Validate Modules and Root
 
 on:
   pull_request:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   terraform-ci:
-    name: Terraform CI (dev)
+    name: Terraform CI Validation
     runs-on: self-hosted
 
     defaults:
@@ -16,37 +16,78 @@ jobs:
         shell: bash
 
     steps:
-      # 1️⃣ Descarga el código del repo
+      # 1️⃣ Descargar el código del repositorio
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Instala Terraform en el runner
+      # 2️⃣ Instalar Terraform en el runner self-hosted
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.6.6
 
-      # 3️⃣ Verifica que AWS credentials funcionan
-      # (MUY IMPORTANTE para confirmar que el runner está bien configurado)
+      # 3️⃣ Verificar identidad AWS (credenciales del runner)
       - name: Verify AWS identity
         run: aws sts get-caller-identity
 
-      # 4️⃣ Inicializa Terraform (backend + módulos)
-      - name: Terraform Init
+      # =========================
+      # FORMATO GLOBAL
+      # =========================
+
+      # 4️⃣ Verifica que todo el código Terraform esté formateado correctamente
+      - name: Terraform fmt (all)
+        run: terraform fmt -check -recursive
+
+      # =========================
+      # TFLINT (LINTING AWS)
+      # =========================
+
+      # 5️⃣ Instala TFLint en el runner
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v4
+
+      # 6️⃣ Ejecuta TFLint en todo el repositorio
+      #     - Analiza módulos y root
+      #     - Detecta malas prácticas AWS
+      #     - Falla el pipeline si encuentra errores
+      - name: Run TFLint (recursive)
+        run: tflint --recursive
+
+      # =========================
+      # VALIDACIÓN DE MÓDULOS
+      # =========================
+
+      # 7️⃣ Valida cada módulo Terraform de forma aislada
+      - name: Validate Terraform modules
+        run: |
+          set -e
+          for module in modules/*; do
+            if [ -d "$module" ]; then
+              echo "===================================="
+              echo "Validating module: $module"
+              echo "===================================="
+              cd "$module"
+              terraform init -backend=false -input=false
+              terraform validate
+              cd - > /dev/null
+            fi
+          done
+
+      # =========================
+      # VALIDACIÓN ROOT (envs/dev)
+      # =========================
+
+      # 8️⃣ Inicializa Terraform en el entorno dev
+      - name: Terraform init (envs/dev)
         working-directory: envs/dev
         run: terraform init -input=false
 
-      # 5️⃣ Comprueba formato del código
-      - name: Terraform Format Check
-        working-directory: envs/dev
-        run: terraform fmt -check -recursive
-
-      # 6️⃣ Valida configuración Terraform
-      - name: Terraform Validate
+      # 9️⃣ Valida el root module (envs/dev)
+      - name: Terraform validate (envs/dev)
         working-directory: envs/dev
         run: terraform validate
 
-      # 7️⃣ Genera plan (NO aplica cambios)
-      - name: Terraform Plan
+      # 🔟 Genera el plan (sin aplicar)
+      - name: Terraform plan (envs/dev)
         working-directory: envs/dev
         run: terraform plan -input=false
