@@ -1,13 +1,3 @@
-variable "project_name" {
-  description = "Project name"
-  type        = string
-}
-
-variable "environment" {
-  description = "Environment name (dev, staging, prod)"
-  type        = string
-}
-
 # Database credentials
 variable "db_name" {
   description = "Database name"
