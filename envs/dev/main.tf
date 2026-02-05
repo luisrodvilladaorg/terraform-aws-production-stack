@@ -43,7 +43,7 @@ module "asg" {
   vpc_id     = module.networking.vpc_id
   subnet_ids = module.networking.public_subnet_ids
 
-  instance_type         = "t3.micro"
+  instance_type         = "t3.small"
   desired_capacity      = 1
   min_size              = 1
   max_size              = 3
