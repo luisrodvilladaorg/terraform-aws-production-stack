@@ -118,8 +118,10 @@ jobs:
 
       # 1️⃣4️⃣ Publica el comentario con costos en el PR
       - name: Post Infracost comment
-        uses: infracost/actions/comment@v3
         if: github.event_name == 'pull_request'
-        with:
-          path: /tmp/infracost.json
-          behavior: update
+        run: |
+          infracost comment github --path /tmp/infracost.json \
+                                   --repo ${{ github.repository }} \
+                                   --pull-request ${{ github.event.pull_request.number }} \
+                                   --github-token ${{ secrets.GITHUB_TOKEN }} \
+                                   --behavior update
