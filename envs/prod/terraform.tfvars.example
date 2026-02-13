@@ -1,0 +1,10 @@
+# ========================================
+# Production Environment Variables
+# ========================================
+# Copy this file to terraform.tfvars and fill with actual values
+# DO NOT commit terraform.tfvars to Git!
+
+# Database Configuration
+db_name     = "appdb_prod"
+db_user     = "prodadmin"
+db_password = "CHANGE_ME_STRONG_PASSWORD_123!"  # Use AWS Secrets Manager in production

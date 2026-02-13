@@ -49,3 +49,15 @@ variable "db_password" {
   sensitive   = true
 }
 
+variable "multi_az" {
+  description = "Enable Multi-AZ deployment for high availability (uses 2 AZ)"
+  type        = bool
+  default     = false
+}
+
+variable "backup_retention_period" {
+  description = "Number of days to retain automated backups"
+  type        = number
+  default     = 7
+}
+

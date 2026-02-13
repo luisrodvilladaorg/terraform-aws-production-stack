@@ -69,6 +69,12 @@ resource "aws_db_instance" "this" {
   username = var.db_user
   password = var.db_password
 
+  # High Availability and Backup Configuration
+  multi_az                = var.multi_az
+  backup_retention_period = var.backup_retention_period
+  backup_window           = "03:00-04:00"
+  maintenance_window      = "Mon:04:00-Mon:05:00"
+
   vpc_security_group_ids = [aws_security_group.rds.id]
   db_subnet_group_name   = aws_db_subnet_group.this.name
 
