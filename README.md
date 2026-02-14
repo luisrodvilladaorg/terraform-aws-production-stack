@@ -25,6 +25,90 @@ Infraestructura AWS lista para producción construida con Terraform. Demuestra m
 
 ---
 
+## 🏢 Infraestructura Creada
+
+Esta infraestructura proporciona una base sólida y escalable para desplegar aplicaciones de producción en AWS. Se ha diseñado siguiendo el patrón de arquitectura de tres niveles (3-tier), asegurando que cada componente esté aislado según su función y niveles de acceso. La infraestructura es completamente modular, lo que permite escalarla, modificarla y adaptarla según tus necesidades específicas sin afectar otros componentes.
+
+**Recursos principales creados:**
+- **VPC** - Red privada virtual con CIDR 10.0.0.0/16
+- **Internet Gateway** - Puerta de enlace para acceso público
+- **NAT Gateway** - Para que recursos privados accedan a internet
+- **Subredes Públicas** - 3 subredes (una por AZ) para recursos públicos
+- **Subredes Privadas** - 3 subredes (una por AZ) para recursos privados
+- **Tablas de Rutas** - Rutas para tráfico público y privado
+- **Application Load Balancer** - Distribuidor de carga con health checks
+- **Auto Scaling Group** - Grupo de escalado automático de instancias EC2
+- **RDS PostgreSQL** - Base de datos relacional con respaldo Multi-AZ
+- **Buckets S3** - Almacenamiento para sitio estático y logs
+- **Security Groups** - Grupos de seguridad con reglas de menor privilegio
+- **IAM Roles** - Roles y políticas para instancias EC2
+
+---
+
+## 🌍 Entorno
+
+Esta infraestructura está diseñada para ser flexible y adaptarse a diferentes fases del ciclo de vida del desarrollo. Contamos con dos entornos principales, cada uno configurado para satisfacer necesidades específicas:
+
+### Entorno de Desarrollo (dev)
+- **Propósito:** Pruebas, experimentación y validación de cambios
+- **Instancias EC2:** t3.micro (1 instancia)
+- **RDS:** db.t3.micro con respaldo automático
+- **Costos:** Optimizados (~$30/mes)
+- **Disponibilidad:** No requiere Multi-AZ
+- **Uso:** Ideal para testing y desarrollo de features
+
+### Entorno de Producción (prod)
+- **Propósito:** Aplicaciones en producción con alta disponibilidad
+- **Instancias EC2:** t3.micro a t3.small (1-3 instancias con escalado)
+- **RDS:** db.t3.micro Multi-AZ con failover automático
+- **Costos:** Mayores pero con garantía de disponibilidad (~$85/mes)
+- **Disponibilidad:** Multi-AZ con réplica en espera
+- **Uso:** Aplicaciones críticas con SLA de disponibilidad
+
+---
+
+## 🌐 Arquitectura de Red
+
+La arquitectura de red está construida siguiendo el patrón de red de tres capas, lo que proporciona seguridad en profundidad (defense in depth) mediante aislamiento de componentes. Cada capa tiene su propio conjunto de subredes y reglas de seguridad, permitiendo control granular del tráfico.
+
+### Estructura VPC
+- **CIDR Principal:** 10.0.0.0/16 (65,536 direcciones IP disponibles)
+- **Distribución:** 6 subredes de /24 (256 IPs cada una)
+- **Zona de Disponibilidad:** Distribuidas en 3 AZs para alta disponibilidad
+
+### Subredes Públicas
+- **Ubicación:** Conectadas directamente a Internet Gateway
+- **Uso:** ALB, NAT Gateway, bastion hosts (si aplica)
+- **Enrutamiento:** Ruta por defecto (0.0.0.0/0) hacia Internet Gateway
+- **CIDR:** 10.0.1.0/24, 10.0.2.0/24, 10.0.3.0/24
+
+### Subredes Privadas
+- **Ubicación:** Sin acceso directo a internet
+- **Uso:** Instancias EC2, bases de datos, aplicaciones
+- **Enrutamiento:** Ruta por defecto (0.0.0.0/0) hacia NAT Gateway
+- **CIDR:** 10.0.11.0/24, 10.0.12.0/24, 10.0.13.0/24
+
+### Flujo de Tráfico
+```
+Internet ↔ IGW ↔ ALB (Subred Pública) 
+                  ↓
+            EC2 Instances (Subred Privada)
+                  ↓
+            RDS Database (Subred Privada)
+```
+
+### Tablas de Rutas
+- **Tabla Pública:** Tráfico hacia IGW (0.0.0.0/0 → IGW)
+- **Tabla Privada:** Tráfico saliente hacia NAT Gateway (0.0.0.0/0 → NAT)
+- **Tráfico Local:** Todo el tráfico intra-VPC va directamente (10.0.0.0/16)
+
+### Grupos de Seguridad (Firewalls)
+- **ALB Security Group:** Acepta tráfico HTTP/HTTPS (puertos 80, 443)
+- **EC2 Security Group:** Acepta tráfico desde ALB en puerto 3000
+- **RDS Security Group:** Acepta conexiones PostgreSQL desde EC2 (puerto 5432)
+
+---
+
 ## 🏗️ Arquitectura
 
 ```
