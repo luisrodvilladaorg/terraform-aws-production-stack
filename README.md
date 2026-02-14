@@ -1,6 +1,6 @@
-# 🚀 AWS Production Infrastructure - Terraform
+# 🚀 Infraestructura de Producción AWS - Terraform
 
-> Enterprise-grade, multi-AZ AWS architecture following industry best practices and security standards.
+> Arquitectura AWS de nivel empresarial, multi-AZ, siguiendo mejores prácticas industriales y estándares de seguridad.
 
 ![CI](https://github.com/luisrodvilladaorg/terraform-aws-production-stack/actions/workflows/terraform-ci.yml/badge.svg)
 ![CD](https://github.com/luisrodvilladaorg/terraform-aws-production-stack/actions/workflows/terraform-cd.yml/badge.svg)
@@ -9,104 +9,104 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 ![Infrastructure](https://img.shields.io/badge/Infrastructure-as_Code-blue)
 
-Production-ready AWS infrastructure built with Terraform. Demonstrates DevOps best practices, modular architecture, and cloud security fundamentals.
+Infraestructura AWS lista para producción construida con Terraform. Demuestra mejores prácticas de DevOps, arquitectura modular y fundamentos de seguridad en la nube.
 
 ---
 
-## 🎯 Key Features
+## 🎯 Características Principales
 
-- ✅ **Multi-AZ High Availability** - 3 availability zones with automatic failover
-- ✅ **Auto Scaling** - Elastic compute responding to load (1-3 instances)
-- ✅ **Private Database** - PostgreSQL RDS isolated in private subnets
-- ✅ **Load Balancing** - Application Load Balancer with health checks
-- ✅ **Modular Design** - Reusable Terraform modules for each component
-- ✅ **Security First** - Least-privilege IAM, security groups, encrypted state
-- ✅ **Cost Optimized** - ~$85/month for complete production-like environment
+- ✅ **Alta Disponibilidad Multi-AZ** - 3 zonas de disponibilidad con conmutación automática
+- ✅ **Escalado Automático** - Computación elástica respondiendo a la carga (1-3 instancias)
+- ✅ **Base de Datos Privada** - PostgreSQL RDS aislada en subredes privadas
+- ✅ **Balanceo de Carga** - Balanceador de Carga de Aplicación con verificaciones de salud
+- ✅ **Diseño Modular** - Módulos Terraform reutilizables para cada componente
+- ✅ **Seguridad Primero** - IAM de menor privilegio, grupos de seguridad, estado cifrado
+- ✅ **Optimizado para Costos** - ~$85/mes para entorno de producción completo
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ Arquitectura
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                   AWS Region (eu-west-3)                    │
+│                   Región AWS (eu-west-3)                    │
 │  ┌──────────────────────────────────────────────────────┐   │
 │  │           VPC (10.0.0.0/16)                          │   │
 │  │                                                       │   │
 │  │  ┌────────────┐  ┌────────────┐  ┌────────────┐    │   │
-│  │  │   Public   │  │   Public   │  │   Public   │    │   │
-│  │  │  Subnet A  │  │  Subnet B  │  │  Subnet C  │    │   │
+│  │  │   Pública  │  │   Pública  │  │   Pública  │    │   │
+│  │  │  Subred A  │  │  Subred B  │  │  Subred C  │    │   │
 │  │  └─────┬──────┘  └─────┬──────┘  └─────┬──────┘    │   │
 │  │        │               │               │            │   │
 │  │        └───────────────┴───────────────┘            │   │
 │  │                        │                            │   │
 │  │          ┌─────────────▼─────────────┐              │   │
-│  │          │  Application Load Balancer│              │   │
+│  │          │ Balanceador de Carga Aplic│              │   │
 │  │          └─────────────┬─────────────┘              │   │
 │  │                        │                            │   │
 │  │          ┌─────────────▼─────────────┐              │   │
-│  │          │   Auto Scaling Group      │              │   │
-│  │          │   (1-3 EC2 instances)     │              │   │
+│  │          │   Grupo Auto Escalado     │              │   │
+│  │          │   (1-3 instancias EC2)    │              │   │
 │  │          └─────────────┬─────────────┘              │   │
 │  │                        │                            │   │
 │  │  ┌────────────┐  ┌────┴───────┐  ┌────────────┐    │   │
-│  │  │  Private   │  │  Private   │  │  Private   │    │   │
-│  │  │ Subnet A   │  │ Subnet B   │  │ Subnet C   │    │   │
+│  │  │  Privada   │  │  Privada   │  │  Privada   │    │   │
+│  │  │  Subred A  │  │  Subred B  │  │  Subred C  │    │   │
 │  │  └─────┬──────┘  └─────┬──────┘  └─────┬──────┘    │   │
 │  │        └───────────────┴───────────────┘            │   │
 │  │                        │                            │   │
 │  │          ┌─────────────▼─────────────┐              │   │
-│  │          │   RDS PostgreSQL Multi-AZ │              │   │
+│  │          │ RDS PostgreSQL Multi-AZ   │              │   │
 │  │          └───────────────────────────┘              │   │
 │  └──────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Components:**
-- VPC with 6 subnets (3 public, 3 private) across 3 AZs
-- Internet Gateway + NAT Gateway
-- Application Load Balancer with target groups
-- Auto Scaling Group (t3.micro Spot instances)
-- RDS PostgreSQL (db.t3.micro, Multi-AZ ready)
-- S3 buckets (static site + ALB logs)
-- IAM roles with least-privilege policies
-- CloudWatch monitoring (future)
+**Componentes:**
+- VPC con 6 subredes (3 públicas, 3 privadas) distribuidas en 3 AZs
+- Puerta de Enlace de Internet + Puerta de Enlace NAT
+- Balanceador de Carga de Aplicación con grupos de destino
+- Grupo Auto Escalado (instancias t3.micro Spot)
+- RDS PostgreSQL (db.t3.micro, listo para Multi-AZ)
+- Buckets S3 (sitio estático + logs ALB)
+- Roles IAM con políticas de menor privilegio
+- Monitoreo CloudWatch (futuro)
 
 ---
 
-## 📦 Terraform Modules
+## 📦 Módulos Terraform
 
 ```
 modules/
-├── networking/    # VPC, subnets, gateways, routing
-├── alb/          # Load balancer, target groups, listeners
-├── asg/          # Auto Scaling, launch templates
-├── rds/          # PostgreSQL database, subnet groups
-├── s3/           # Storage buckets, policies
-└── iam/          # Roles, policies, instance profiles
+├── networking/    # VPC, subredes, puertas de enlace, enrutamiento
+├── alb/          # Balanceador de carga, grupos de destino, escuchadores
+├── asg/          # Escalado automático, plantillas de lanzamiento
+├── rds/          # Base de datos PostgreSQL, grupos de subredes
+├── s3/           # Buckets de almacenamiento, políticas
+└── iam/          # Roles, políticas, perfiles de instancia
 
 envs/
-├── dev/          # Development environment
-└── prod/         # Production (planned)
+├── dev/          # Entorno de desarrollo
+└── prod/         # Producción (planificado)
 ```
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Inicio Rápido
 
-### Prerequisites
+### Requisitos Previos
 - Terraform >= 1.5.0
-- AWS CLI configured
-- S3 bucket for remote state
+- AWS CLI configurado
+- Bucket S3 para estado remoto
 
-### Deploy in 5 Steps
+### Implementar en 5 Pasos
 
 ```bash
-# 1. Clone repository
+# 1. Clonar repositorio
 git clone <repo-url>
 cd terraform-aws-production-stack/envs/dev
 
-# 2. Configure variables
+# 2. Configurar variables
 cat > terraform.tfvars <<EOF
 project_name = "my-stack"
 environment  = "dev"
@@ -115,161 +115,161 @@ db_user      = "admin"
 db_password  = "ChangeMe123!"
 EOF
 
-# 3. Initialize Terraform
+# 3. Inicializar Terraform
 terraform init
 
-# 4. Review plan
+# 4. Revisar plan
 terraform plan
 
-# 5. Deploy infrastructure
+# 5. Implementar infraestructura
 terraform apply
 ```
 
-**Deployment time:** ~8 minutes  
-**Resources created:** 30+
+**Tiempo de implementación:** ~8 minutos  
+**Recursos creados:** 30+
 
-### Verify Deployment
+### Verificar Implementación
 
 ```bash
-# Get ALB URL
+# Obtener URL del ALB
 terraform output alb_dns_name
 
-# Test application
+# Probar aplicación
 curl http://$(terraform output -raw alb_dns_name)
 
-# Test API endpoint
+# Probar punto final de API
 curl http://$(terraform output -raw alb_dns_name)/api/ping
 ```
 
 ---
 
-## 🎨 Infrastructure Highlights
+## 🎨 Aspectos Destacados de la Infraestructura
 
-### 🔒 Security
-- **Zero public database access** - RDS in private subnets only
-- **Security groups** - Least-privilege ingress/egress rules
-- **IAM roles** - No hardcoded credentials on instances
-- **Encrypted state** - S3 backend with SSE
-- **Environment validation** - Prevents accidental production deployments
+### 🔒 Seguridad
+- **Acceso a base de datos cero público** - RDS solo en subredes privadas
+- **Grupos de seguridad** - Reglas de entrada/salida de menor privilegio
+- **Roles IAM** - Sin credenciales codificadas en instancias
+- **Estado cifrado** - Backend S3 con SSE
+- **Validación de entorno** - Previene implementaciones accidentales en producción
 
-### 🌍 High Availability
-- **Multi-AZ deployment** - Spans 3 availability zones
-- **Auto Scaling** - Automatic instance replacement
-- **Health checks** - ALB monitors instance health
-- **RDS standby** - Multi-AZ database failover ready
+### 🌍 Alta Disponibilidad
+- **Implementación Multi-AZ** - Distribuida en 3 zonas de disponibilidad
+- **Escalado Automático** - Reemplazo automático de instancias
+- **Verificaciones de salud** - ALB monitorea la salud de instancias
+- **RDS en espera** - Conmutación por error de base de datos Multi-AZ lista
 
-### 💡 Best Practices
-- **Modular architecture** - DRY principle, reusable components
-- **Remote state** - S3 + DynamoDB for team collaboration
-- **Consistent tagging** - All resources tagged (Environment, Project, ManagedBy)
-- **Variable validation** - Input validation prevents errors
-- **Comprehensive outputs** - Easy integration with other tools
+### 💡 Mejores Prácticas
+- **Arquitectura modular** - Principio DRY, componentes reutilizables
+- **Estado remoto** - S3 + DynamoDB para colaboración en equipo
+- **Etiquetado consistente** - Todos los recursos etiquetados (Environment, Project, ManagedBy)
+- **Validación de variables** - Validación de entrada previene errores
+- **Salidas completas** - Fácil integración con otras herramientas
 
 ---
 
-## 💰 Cost Breakdown
+## 💰 Desglose de Costos
 
-| Component | Spec | Monthly Cost |
-|-----------|------|--------------|
+| Componente | Especificación | Costo Mensual |
+|-----------|------|---------------|
 | EC2 (ASG) | 1x t3.micro | $7.50 |
 | RDS | db.t3.micro | $15.00 |
-| ALB | Standard | $16.00 |
-| NAT Gateway | 1x + data | $35.00 |
-| S3 + Data | Minimal usage | $6.00 |
-| CloudWatch | Logs/Metrics | $2.00 |
+| ALB | Estándar | $16.00 |
+| Puerta NAT | 1x + datos | $35.00 |
+| S3 + Datos | Uso mínimo | $6.00 |
+| CloudWatch | Logs/Métricas | $2.00 |
 | **TOTAL** | | **~$81.50** |
 
-**Cost optimization tips:**
-- Use Spot instances (save 70%)
-- Schedule ASG for business hours only
-- Delete old logs (lifecycle policies)
-- Consider VPC endpoints to bypass NAT
+**Consejos de optimización de costos:**
+- Usar instancias Spot (ahorrar 70%)
+- Programar ASG solo durante horario comercial
+- Eliminar logs antiguos (políticas de ciclo de vida)
+- Considerar puntos finales VPC para evitar NAT
 
 ---
 
-## 🛠️ Technical Stack
+## 🛠️ Stack Técnico
 
-**Infrastructure:** Terraform 1.5+, AWS  
-**Compute:** EC2 Auto Scaling (Amazon Linux 2)  
-**Database:** PostgreSQL 15.15 (RDS)  
-**Storage:** S3  
-**Networking:** VPC, ALB, NAT Gateway  
+**Infraestructura:** Terraform 1.5+, AWS  
+**Computación:** Escalado Automático EC2 (Amazon Linux 2)  
+**Base de Datos:** PostgreSQL 15.15 (RDS)  
+**Almacenamiento:** S3  
+**Redes:** VPC, ALB, Puerta de Enlace NAT  
 **Backend:** Node.js Express API  
-**Frontend:** Static HTML/CSS site
+**Frontend:** Sitio estático HTML/CSS
 
 ---
 
-## 📊 Outputs
+## 📊 Salidas
 
-All modules export comprehensive outputs with descriptions:
+Todos los módulos exportan salidas completas con descripciones:
 
 ```hcl
-# Environment outputs (20+ values)
-- alb_dns_name              # Load balancer URL
-- application_url           # Full HTTP URL
-- api_health_check          # Health check endpoint
-- db_health_check           # Database connectivity test
-- vpc_id                    # VPC identifier
-- asg_name                  # Auto Scaling Group name
-- static_bucket             # S3 bucket name
-- And more...
+# Salidas de entorno (20+ valores)
+- alb_dns_name              # URL del balanceador de carga
+- application_url           # URL HTTP completa
+- api_health_check          # Punto final de verificación de salud
+- db_health_check           # Prueba de conectividad de BD
+- vpc_id                    # Identificador de VPC
+- asg_name                  # Nombre del Grupo Auto Escalado
+- static_bucket             # Nombre del bucket S3
+- Y más...
 ```
 
 ---
 
-## 🔄 CI/CD Integration
+## 🔄 Integración CI/CD
 
-**Status:** 🚧 Planned
+**Estado:** 🚧 Planificado
 
-GitHub Actions workflow for automated deployments:
-- `terraform fmt` + `validate` on PRs
-- Security scanning (tfsec, checkov)
-- Automated plan comments on PRs
-- Auto-deploy to dev on merge to `main`
-- Manual approval for production
-
----
-
-## 📚 Documentation
-
-- **[Deployment Examples](docs/examples.md)** - Real-world deployment scenarios
-- **[Module Documentation](modules/)** - Individual module READMEs
-- **[Commands Reference](docs/commands.md)** - Common Terraform commands
+Flujo de trabajo de GitHub Actions para implementaciones automatizadas:
+- `terraform fmt` + `validate` en PRs
+- Escaneo de seguridad (tfsec, checkov)
+- Comentarios de plan automatizados en PRs
+- Auto-implementación en dev al fusionar en `main`
+- Aprobación manual para producción
 
 ---
 
-## 🎯 Future Enhancements
+## 📚 Documentación
 
-- [ ] AWS Secrets Manager for credential management
-- [ ] CloudWatch dashboards and alarms
-- [ ] SSL/TLS with ACM certificates
-- [ ] Route53 DNS management
-- [ ] CloudFront CDN distribution
-- [ ] ECS/Fargate containerization
-- [ ] Multi-region deployment
-- [ ] Automated testing with Terratest
+- **[Ejemplos de Implementación](docs/examples.md)** - Escenarios de implementación del mundo real
+- **[Documentación de Módulos](modules/)** - READMEs de módulos individuales
+- **[Referencia de Comandos](docs/commands.md)** - Comandos Terraform comunes
 
 ---
 
-## 📝 License
+## 🎯 Mejoras Futuras
 
-MIT License - Free to use and modify
-
----
-
-## 👨‍💻 About
-
-Built as a demonstration of production-grade Infrastructure as Code practices. Showcases expertise in:
-
-- ☁️ Cloud Architecture (AWS)
-- 🔧 Infrastructure as Code (Terraform)
-- 🔐 Security & Compliance
-- 📈 Scalability & High Availability
-- 💰 Cost Optimization
-- 🏗️ DevOps Best Practices
-
-**Perfect for:** DevOps portfolios, learning Terraform, AWS certification prep, or as a foundation for real production workloads.
+- [ ] AWS Secrets Manager para gestión de credenciales
+- [ ] Paneles de control y alarmas CloudWatch
+- [ ] SSL/TLS con certificados ACM
+- [ ] Gestión de DNS Route53
+- [ ] Distribución CDN CloudFront
+- [ ] Containerización ECS/Fargate
+- [ ] Implementación multi-región
+- [ ] Pruebas automatizadas con Terratest
 
 ---
 
-⭐ **Star this repo** if you find it useful!
+## 📝 Licencia
+
+Licencia MIT - Libre para usar y modificar
+
+---
+
+## 👨‍💻 Acerca de
+
+Construido como demostración de prácticas de Infraestructura como Código de nivel empresarial. Muestra experiencia en:
+
+- ☁️ Arquitectura en la Nube (AWS)
+- 🔧 Infraestructura como Código (Terraform)
+- 🔐 Seguridad y Cumplimiento
+- 📈 Escalabilidad y Alta Disponibilidad
+- 💰 Optimización de Costos
+- 🏗️ Mejores Prácticas de DevOps
+
+**Perfecto para:** Portafolios DevOps, aprender Terraform, preparación de certificación AWS, o como base para cargas de trabajo reales en producción.
+
+---
+
+⭐ **¡Dale una estrella a este repositorio** si lo encuentras útil!

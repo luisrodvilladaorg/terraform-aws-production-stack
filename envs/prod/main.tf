@@ -9,7 +9,7 @@ module "networking" {
   project_name = "terraform-aws-stack"
   environment  = "prod"
 
-  vpc_cidr = "10.1.0.0/16"  # Different CIDR from dev
+  vpc_cidr = "10.1.0.0/16" # Different CIDR from dev
 
   public_subnet_cidrs = [
     "10.1.1.0/24",
@@ -101,6 +101,6 @@ module "rds" {
   db_password = var.db_password
 
   # Production configuration: Multi-AZ for HA
-  multi_az                = true  # 2 AZ with automatic failover
-  backup_retention_period = 30    # Extended backup retention
+  multi_az                = true # 2 AZ with automatic failover
+  backup_retention_period = 30   # Extended backup retention
 }
