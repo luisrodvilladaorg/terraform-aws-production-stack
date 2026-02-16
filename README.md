@@ -164,6 +164,10 @@ La infraestructura soporta múltiples entornos con configuraciones específicas:
 
 ---
 
+### 📷 [Para ver más capturas del despliegue →](docs/SCREENSHOTS.md)
+
+---
+
 ## 🌐 Arquitectura de Red
 
 La arquitectura de red está construida siguiendo el patrón de red de tres capas, lo que proporciona seguridad en profundidad (defense in depth) mediante aislamiento de componentes. Cada capa tiene su propio conjunto de subredes y reglas de seguridad, permitiendo control granular del tráfico.
