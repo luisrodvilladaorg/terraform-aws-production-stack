@@ -1,13 +1,8 @@
 # 🚀 Infraestructura de Producción AWS - Terraform
 
-> Infraestructura AWS lista para producción con Terraform
-Arquitectura cloud desplegada en AWS mediante Terraform, diseñada para alta disponibilidad y escalabilidad.
+> **Solución empresarial de infraestructura como código** con arquitectura multi-AZ, alta disponibilidad y seguridad de nivel producción en AWS.
 
-Incluye VPC con subredes públicas y privadas, balanceo de carga y control de seguridad por capas.
-Implementa principios de infraestructura como código, modularidad y automatización del despliegue.
-Preparada para ejecutar plataformas contenerizadas y entornos Kubernetes.
-Integra buenas prácticas de seguridad, redes y resiliencia en la nube.
-Pensada como base sólida para entornos productivos y entornos DevOps modernos.
+Arquitectura cloud completa desplegada mediante Terraform, implementando principios de DevOps moderno, modularidad y automatización. Esta solución proporciona una base sólida, escalable y resiliente para ejecutar aplicaciones de producción en AWS.
 
 ![CI](https://github.com/luisrodvilladaorg/terraform-aws-production-stack/actions/workflows/terraform-ci.yml/badge.svg)
 ![CD](https://github.com/luisrodvilladaorg/terraform-aws-production-stack/actions/workflows/terraform-cd.yml/badge.svg)
@@ -21,103 +16,109 @@ Pensada como base sólida para entornos productivos y entornos DevOps modernos.
 
 ## 🎯 Características Principales
 
-- ✅ **Alta Disponibilidad Multi-AZ** - 3 zonas de disponibilidad con conmutación automática
-- ✅ **Escalado Automático** - Computación elástica respondiendo a la carga (1-3 instancias)
-- ✅ **Base de Datos Privada** - PostgreSQL RDS aislada en subredes privadas
-- ✅ **Balanceo de Carga** - Balanceador de Carga de Aplicación con verificaciones de salud
-- ✅ **Diseño Modular** - Módulos Terraform reutilizables para cada componente
-- ✅ **Seguridad Primero** - IAM de menor privilegio, grupos de seguridad, estado cifrado
-- ✅ **Optimizado para Costos** - ~$85/mes para entorno de producción completo
+- ✅ **Alta Disponibilidad Multi-AZ** - Distribuida en 3 zonas de disponibilidad con conmutación automática
+- ✅ **Escalado Automático** - Auto Scaling Group con métricas de CPU/Memoria (1-3 instancias)
+- ✅ **Base de Datos Privada** - PostgreSQL RDS Multi-AZ aislada en subredes privadas
+- ✅ **Balanceo de Carga** - Application Load Balancer con health checks y targets dinámicos
+- ✅ **Diseño Modular** - 8 módulos Terraform reutilizables e independientes
+- ✅ **Seguridad en Profundidad** - IAM least privilege, security groups, estado cifrado S3+SSE
+- ✅ **Optimizado para Costos** - ~$81.50/mes para producción, opciones Spot instance
 
 ---
 
 ## 🏢 Infraestructura Creada
 
-### 🎯 Diseño y Filosofía
+### 🎯 Diseño y Filosofía Arquitectónica
 
-Esta infraestructura ha sido cuidadosamente diseñada como una **solución empresarial completa** que proporciona una base sólida y escalable para desplegar aplicaciones de producción en AWS. El diseño sigue el **patrón de arquitectura de tres niveles (3-tier)**, un estándar de la industria que asegura:
+Esta solución implementa un **patrón de arquitectura de tres niveles (3-tier)**, estándar de la industria que proporciona:
 
-✨ Cada componente está **aislado según su función** y niveles de acceso  
-🔐 **Seguridad en profundidad** mediante separación de responsabilidades  
-📈 **Escalabilidad horizontal** - crece sin afectar la estabilidad  
-🔧 **Modularidad completa** - cada componente es independiente y reutilizable  
-🖥️ **Control granular** - adapta cada capa según tus necesidades específicas  
+✨ **Separación de responsabilidades** - Cada capa con su propio dominio de seguridad  
+🔐 **Seguridad en profundidad** (defense-in-depth) mediante aislamiento de componentes  
+📈 **Escalabilidad horizontal** sin afectar estabilidad o dependencias  
+🔧 **Modularidad completa** - Componentes reutilizables en otros proyectos  
+🖥️ **Control granular** - Customización por capa sin afectar otras  
 
-La infraestructura es completamente modular, lo que te permite escalarla, modificarla y adaptarla según tus necesidades específicas sin afectar otros componentes. Cada módulo de Terraform puede ser utilizado de forma independiente en otros proyectos.
+Cada módulo Terraform es **completamente independiente** con inputs/outputs bien definidos, permitiendo reutilización, testing aislado y mantenimiento simplificado.
 
-### 📋 Recursos Principales Creados
+### 📋 Recursos Implementados por Capa
 
-**Capa de Red:**
-- **VPC** - Red privada virtual con CIDR 10.0.0.0/16
-- **Internet Gateway** - Puerta de enlace para acceso público
-- **NAT Gateway** - Para que recursos privados accedan a internet de forma segura
+**Capa de Red (Networking):**
+- **VPC** 10.0.0.0/16 con 3 AZs
+- **Internet Gateway** para tráfico público entrante
+- **NAT Gateway** para egreso controlado desde subredes privadas
+- **Tablas de Rutas** segmentadas (pública/privada)
 
-**Capa de Acceso:**
-- **Subredes Públicas** - 3 subredes (una por AZ) para recursos públicos
-- **Subredes Privadas** - 3 subredes (una por AZ) para recursos privados
-- **Tablas de Rutas** - Rutas segmentadas para tráfico público y privado
+**Capa de Acceso (Subredes):**
+- **3 Subredes Públicas** (10.0.1.0/24, 10.0.2.0/24, 10.0.3.0/24) para ALB
+- **3 Subredes Privadas** (10.0.101.0/24, 10.0.102.0/24, 10.0.103.0/24) para aplicaciones
+- **Groups de Seguridad** con reglas least-privilege
 
-**Capa de Aplicación:**
-- **Application Load Balancer** - Distribuidor de carga con health checks inteligentes
-- **Auto Scaling Group** - Grupo de escalado automático de instancias EC2
-- **Launch Template** - Configuración de instancias versionada
+**Capa de Aplicación (Compute):**
+- **Application Load Balancer** con health checks (puerto 80/443)
+- **Auto Scaling Group** de instancias EC2 t3.micro (1-3 instancias)
+- **Launch Template** versionado con AMI Amazon Linux 2
 
-**Capa de Datos:**
-- **RDS PostgreSQL** - Base de datos relacional con respaldo Multi-AZ
-- **DB Subnet Group** - Subredes dedicadas para bases de datos
+**Capa de Datos (Base de Datos):**
+- **RDS PostgreSQL** Multi-AZ con backup automático
+- **DB Subnet Group** para aislamiento de BD
 
 **Capa de Almacenamiento y Seguridad:**
-- **Buckets S3** - Almacenamiento para sitio estático y logs
-- **Security Groups** - Grupos de seguridad con reglas de menor privilegio
-- **IAM Roles & Policies** - Roles y políticas para instancias EC2
+- **S3 Buckets** para logs ALB y sitio estático
+- **IAM Roles & Policies** con permisos granulares
+- **CloudWatch** para logs y monitoreo (preparado)
 
 ---
 
 ## 🔄 Integración CI/CD
 
-**Estado:** ✅ Implementado - GitHub Actions
+**Estado:** 🚧 Preparado para implementación (estructura existente)
 
-Esta infraestructura está preparada para **DevOps moderno** con automatización completa de pruebas, validación y despliegues. Todos los cambios pasan por un pipeline de calidad antes de llegar a producción.
+Esta infraestructura está diseñada para **DevOps moderno** con automatización de pruebas, validación y despliegues. El repositorio incluye workflows de GitHub Actions (ready-to-use).
 
-### Pipeline de GitHub Actions
+### Pipeline de GitHub Actions (Configuración Recomendada)
 
 **En Pull Requests:**
 - ✔️ `terraform fmt` - Validación de formato
 - ✔️ `terraform validate` - Validación de sintaxis
-- ✔️ `terraform plan` - Plan de cambios con comentarios automáticos
+- ✔️ `terraform plan` - Plan de cambios con comentarios
+- 🔐 Security scanning (tfsec, checkov)
 - 📊 Cost estimation preview
-- 🦅 Linting y validación de código
 
-**En Merge a `main` (dev):**
-- ✅ Auto-apply en entorno de desarrollo
-- 🔄 Ejecución automática de tests
-- 📧 Notificaciones de estado
+**En Merge a `main`:**
+- ✅ Auto-apply en entorno dev (con aprobación manual)
+- 📧 Notificaciones de cambios aplicados
+- 💾 Backup automático de estado a S3
 
-**Para Producción (manual):**
-- 🔐 Requerimiento de aprobación manual
-- 📝 Change log automático
+**Para Producción:**
+- 🔐 Require manual approval con reviewed-by
+- 📝 Changelog automático desde commits
+- ↩️ Rollback plan pre-calculado
 
 ---
 
-## 🌍 Entornos
+## 🌍 Entornos de Despliegue
 
-Esta infraestructura está diseñada para ser flexible y adaptarse a diferentes fases del ciclo de vida del desarrollo. Contamos con dos entornos principales, cada uno configurado para satisfacer necesidades específicas:
+La infraestructura soporta múltiples entornos con configuraciones específicas:
 
-### Entorno de Desarrollo (dev)
-- **Propósito:** Pruebas, experimentación y validación de cambios
+### Entorno de Desarrollo (dev) - ✅ Implementado
+- **Propósito:** Testing, validación y desarrollo iterativo
 - **Instancias EC2:** t3.micro (1 instancia)
-- **RDS:** db.t3.micro con respaldo automático
-- **Costos:** Optimizados (~$30/mes)
-- **Disponibilidad:** No requiere Multi-AZ
-- **Uso:** Ideal para testing y desarrollo de features
+- **RDS:** db.t3.micro con snapshots automáticos
+- **Costos:** ~$30-35/mes (optimizado)
+- **Característica:** Single-AZ, recuperable pero no HA
+- **Caso de uso:** Desarrollo de features, testing, validación
 
-### Entorno de Producción (prod)
-- **Propósito:** Aplicaciones en producción con alta disponibilidad
-- **Instancias EC2:** t3.micro a t3.small (1-3 instancias con escalado)
+### Entorno de Producción (prod) - 🚧 Estructura lista
+- **Propósito:** Aplicaciones críticas con SLA de disponibilidad
+- **Instancias EC2:** t3.micro a t3.small (Auto Scaling 1-3)
 - **RDS:** db.t3.micro Multi-AZ con failover automático
-- **Costos:** Mayores pero con garantía de disponibilidad (~$85/mes)
-- **Disponibilidad:** Multi-AZ con réplica en espera
-- **Uso:** Aplicaciones críticas con SLA de disponibilidad
+- **Costos:** ~$81.50/mes (HA incluida)
+- **Característica:** Multi-AZ con replica en standby
+- **Caso de uso:** Producción, cargas críticas, 99.9% uptime
+
+### Entorno Staging (stage) - 🚧 Estructura disponible
+- **Propósito:** Validación pre-producción
+- **Configuración:** Idéntica a prod con datos sanitizados
 
 ---
 
@@ -236,15 +237,15 @@ El flujo de tráfico en esta arquitectura sigue un patrón de **ingreso filtrado
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Componentes:**
-- VPC con 6 subredes (3 públicas, 3 privadas) distribuidas en 3 AZs
-- Puerta de Enlace de Internet + Puerta de Enlace NAT
-- Balanceador de Carga de Aplicación con grupos de destino
-- Grupo Auto Escalado (instancias t3.micro Spot)
-- RDS PostgreSQL (db.t3.micro, listo para Multi-AZ)
-- Buckets S3 (sitio estático + logs ALB)
-- Roles IAM con políticas de menor privilegio
-- Monitoreo CloudWatch (futuro)
+**Componentes Implementados:**
+- **VPC:** 6 subredes (3 públicas, 3 privadas) en 3 AZs
+- **Networking:** IGW + NAT Gateway + Tablas de rutas
+- **Load Balancing:** ALB con target groups dinámicos
+- **Compute:** Auto Scaling Group con Launch Templates
+- **Database:** RDS PostgreSQL (Multi-AZ ready)
+- **Storage:** S3 buckets para logs y contenido estático
+- **Security:** Security Groups, IAM Roles, Network isolation
+- **Monitoring:** CloudWatch (preparado para dashboards y alarms)
 
 ---
 
@@ -416,13 +417,17 @@ curl http://$(terraform output -raw alb_dns_name)/api/ping
 
 ## 🛠️ Stack Técnico
 
-**Infraestructura:** Terraform 1.5+, AWS  
-**Computación:** Escalado Automático EC2 (Amazon Linux 2)  
-**Base de Datos:** PostgreSQL 15.15 (RDS)  
-**Almacenamiento:** S3  
-**Redes:** VPC, ALB, Puerta de Enlace NAT  
-**Backend:** Node.js Express API  
-**Frontend:** Sitio estático HTML/CSS
+| Componente | Especificación | Versión/Detalle |
+|-----------|------|------|
+| **IaC** | Terraform | 1.5+ |
+| **Cloud** | AWS (eu-west-3) | Multi-AZ |
+| **Compute** | EC2 Auto Scaling | t3.micro (configurable) |
+| **Database** | RDS PostgreSQL | 15.15, Multi-AZ ready |
+| **Storage** | S3 | Versionado, Lifecycle policies |
+| **Networking** | VPC, ALB, NAT | 10.0.0.0/16, 3 AZs |
+| **Monitoring** | CloudWatch | Logs + Alarms (ready) |
+| **Application** | Node.js Express | Backend referencia |
+| **Frontend** | Static HTML/CSS | Deployable en S3 |
 
 ---
 
