@@ -1,8 +1,13 @@
 # 🚀 Infraestructura de Producción AWS - Terraform
 
-> Arquitectura AWS de nivel empresarial, multi-AZ, siguiendo mejores prácticas industriales y estándares de seguridad.
+> Infraestructura AWS lista para producción con Terraform
+Arquitectura cloud desplegada en AWS mediante Terraform, diseñada para alta disponibilidad y escalabilidad.
 
-Infraestructura AWS lista para producción construida con Terraform. Demuestra mejores prácticas de DevOps, arquitectura modular y fundamentos de seguridad en la nube.
+Incluye VPC con subredes públicas y privadas, balanceo de carga y control de seguridad por capas.
+Implementa principios de infraestructura como código, modularidad y automatización del despliegue.
+Preparada para ejecutar plataformas contenerizadas y entornos Kubernetes.
+Integra buenas prácticas de seguridad, redes y resiliencia en la nube.
+Pensada como base sólida para entornos productivos y entornos DevOps modernos.
 
 ![CI](https://github.com/luisrodvilladaorg/terraform-aws-production-stack/actions/workflows/terraform-ci.yml/badge.svg)
 ![CD](https://github.com/luisrodvilladaorg/terraform-aws-production-stack/actions/workflows/terraform-cd.yml/badge.svg)
@@ -146,34 +151,34 @@ El flujo de tráfico en esta arquitectura sigue un patrón de **ingreso filtrado
                     │                  INTERNET (0.0.0.0/0)                         │
                     └───────────────────────────────────────────┬───────────────────┘
                                             │
-                    ┌──────────────────────▼──────────────────────┐
-                    │  Internet Gateway (IGW)                     │
-                    │  Punto de entrada a la VPC                 │
-                    └──────────────────────┬──────────────────────┘
+                            ┌──────────────────────▼──────────────────────┐
+                            │  Internet Gateway (IGW)                     │
+                            │  Punto de entrada a la VPC                 │
+                            └──────────────────────┬──────────────────────┘
                                           │
-        ┌─────────────────────────────────▼─────────────────────────────┐
-        │  Application Load Balancer (Subred Pública)                   │
-        │  Puerto: 80/443 - HTTP/HTTPS                                 │
-        │  ✓ Balanceo de carga                                          │
-        │  ✓ Health checks                                              │
-        │  ✓ Terminación SSL/TLS                                        │
-        └─────────────────────────────────┬──────────────────────────────┘
+                    ┌─────────────────────────────────▼─────────────────────────────┐
+                    │  Application Load Balancer (Subred Pública)                   │
+                    │  Puerto: 80/443 - HTTP/HTTPS                                 │
+                    │  ✓ Balanceo de carga                                          │
+                    │  ✓ Health checks                                              │
+                    │  ✓ Terminación SSL/TLS                                        │
+                    └─────────────────────────────────┬──────────────────────────────┘
                                           │
-        ┌─────────────────────────────────▼──────────────────────────────┐
-        │  Auto Scaling Group (Subred Privada)                           │
-        │  Instancias EC2 (1-3) - Puerto: 3000                           │
-        │  ✓ Aplicación Node.js                                           │
-        │  ✓ Health monitoring                                            │
-        │  ✓ Auto-escalado por CPU/Memoria                               │
-        └─────────────────────────────────┬──────────────────────────────┘
+                    ┌─────────────────────────────────▼──────────────────────────────┐
+                    │  Auto Scaling Group (Subred Privada)                           │
+                    │  Instancias EC2 (1-3) - Puerto: 3000                           │
+                    │  ✓ Aplicación Node.js                                           │
+                    │  ✓ Health monitoring                                            │
+                    │  ✓ Auto-escalado por CPU/Memoria                               │
+                    └─────────────────────────────────┬──────────────────────────────┘
                                           │
-        ┌─────────────────────────────────▼──────────────────────────────┐
-        │  RDS PostgreSQL Multi-AZ (Subred Privada)                      │
-        │  Puerto: 5432 - Replicación entre AZs                          │
-        │  ✓ Replicación síncrona                                         │
-        │  ✓ Failover automático <60s                                     │
-        │  ✓ Backups automáticos diarios                                  │
-        └──────────────────────────────────────────────────────────────┘
+                    ┌─────────────────────────────────▼──────────────────────────────┐
+                    │  RDS PostgreSQL Multi-AZ (Subred Privada)                      │
+                    │  Puerto: 5432 - Replicación entre AZs                          │
+                    │  ✓ Replicación síncrona                                        │
+                    │  ✓ Failover automático <60s                                    │
+                    │  ✓ Backups automáticos diarios                                 │
+                    └────────────────────────────────────────────────────────────────
 ```
 
 **Características técnicas del enrutamiento:**
