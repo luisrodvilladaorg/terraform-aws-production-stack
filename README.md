@@ -80,7 +80,6 @@ Esta infraestructura está preparada para **DevOps moderno** con automatización
 - ✔️ `terraform fmt` - Validación de formato
 - ✔️ `terraform validate` - Validación de sintaxis
 - ✔️ `terraform plan` - Plan de cambios con comentarios automáticos
-- 🔐 Security scanning (tfsec, checkov)
 - 📊 Cost estimation preview
 - 🦅 Linting y validación de código
 
@@ -88,13 +87,10 @@ Esta infraestructura está preparada para **DevOps moderno** con automatización
 - ✅ Auto-apply en entorno de desarrollo
 - 🔄 Ejecución automática de tests
 - 📧 Notificaciones de estado
-- 💾 Backup automático de estado
 
 **Para Producción (manual):**
 - 🔐 Requerimiento de aprobación manual
 - 📝 Change log automático
-- 🚀 Despliegue con canary deployment
-- ↩️ Rollback automático si falla
 
 ---
 
@@ -146,9 +142,9 @@ La arquitectura de red está construida siguiendo el patrón de red de tres capa
 El flujo de tráfico en esta arquitectura sigue un patrón de **ingreso filtrado y egreso controlado**, garantizando que toda la comunicación sea inspeccionada por capas de seguridad:
 
 ```
-┌───────────────────────────────────────────────────────────────┐
-│ INTERNET (0.0.0.0/0)                                        │
-└───────────────────────────────────────────┬───────────────────┘
+                    ┌───────────────────────────────────────────────────────────────┐
+                    │                  INTERNET (0.0.0.0/0)                         │
+                    └───────────────────────────────────────────┬───────────────────┘
                                             │
                     ┌──────────────────────▼──────────────────────┐
                     │  Internet Gateway (IGW)                     │
