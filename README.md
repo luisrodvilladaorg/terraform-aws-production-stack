@@ -1,8 +1,13 @@
 # 🚀 Infraestructura de Producción AWS - Terraform
 
-> **Solución empresarial de infraestructura como código** con arquitectura multi-AZ, alta disponibilidad y seguridad de nivel producción en AWS.
+> Infraestructura AWS lista para producción con Terraform
+Arquitectura cloud desplegada en AWS mediante Terraform, diseñada para alta disponibilidad y escalabilidad.
 
-Arquitectura cloud completa desplegada mediante Terraform, implementando principios de DevOps moderno, modularidad y automatización. Esta solución proporciona una base sólida, escalable y resiliente para ejecutar aplicaciones de producción en AWS.
+Incluye VPC con subredes públicas y privadas, balanceo de carga y control de seguridad por capas.
+Implementa principios de infraestructura como código, modularidad y automatización del despliegue.
+Preparada para ejecutar plataformas contenerizadas y entornos Kubernetes.
+Integra buenas prácticas de seguridad, redes y resiliencia en la nube.
+Pensada como base sólida para entornos productivos y entornos DevOps modernos.
 
 ![CI](https://github.com/luisrodvilladaorg/terraform-aws-production-stack/actions/workflows/terraform-ci.yml/badge.svg)
 ![CD](https://github.com/luisrodvilladaorg/terraform-aws-production-stack/actions/workflows/terraform-cd.yml/badge.svg)
@@ -119,6 +124,43 @@ La infraestructura soporta múltiples entornos con configuraciones específicas:
 ### Entorno Staging (stage) - 🚧 Estructura disponible
 - **Propósito:** Validación pre-producción
 - **Configuración:** Idéntica a prod con datos sanitizados
+
+---
+
+## 📸 Screenshots
+
+### Inicialización de Terraform
+![Terraform init](docs/images/terraform-init.png)
+
+*Inicialización completa del proyecto Terraform con descarga de providers AWS, módulos y configuración del backend remoto. Este paso prepara el workspace para gestionar la infraestructura como código.*
+
+---
+
+### Estado de Recursos Desplegados
+![Terraform state list](docs/images/state-list.png)
+
+*Listado completo de los 80+ recursos creados en AWS. Muestra la gestión centralizada del estado de la infraestructura, permitiendo rastrear cada componente desde VPC, subredes, ALB, ASG, RDS y políticas IAM.*
+
+---
+
+### Instancias EC2 en Ejecución
+![Instancias EC2](docs/images/instancias.png)
+
+*Visualización de instancias EC2 t3.micro activas y en estado running en la consola de AWS. Demuestra el Auto Scaling Group funcionando correctamente con monitoreo de salud y distribución en múltiples zonas de disponibilidad.*
+
+---
+
+### Auto Scaling en Acción
+![ASG Scaling](docs/images/asg.png)
+
+*Gráficas de métricas del Auto Scaling Group mostrando el escalado automático basado en CPU y memoria. Visualiza cómo la infraestructura se adapta dinámicamente a la carga, desde 1 hasta 3 instancias según demanda.*
+
+---
+
+### Destrucción Controlada de Infraestructura
+![Terraform destroy](docs/images/terraform-destroy.png)
+
+*Ejecución controlada de `terraform destroy` demostrando la capacidad de desmantelar completamente la infraestructura en AWS. Muestra cómo con un único comando se pueden liberar todos los recursos de forma segura y auditable.*
 
 ---
 
