@@ -215,14 +215,6 @@
 
 ---
 
-## 🎯 Orden de Importancia
-
-1. **Crítica:** Terraform Init, VPC, Subnets, Security Groups, ALB, EC2, State List
-2. **Alta:** Route Tables, Listeners, S3, ASG, Workflows
-3. **Referencia:** Resources, Folders, Pipelines, Destroy
-
----
-
 ## 📌 Notas
 
 - Todas las imágenes están en formato PNG de alta calidad

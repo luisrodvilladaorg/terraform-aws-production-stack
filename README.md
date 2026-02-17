@@ -1,6 +1,7 @@
 # 🚀 Infraestructura de Producción AWS - Terraform
 
 > Infraestructura AWS lista para producción con Terraform
+
 Arquitectura cloud desplegada en AWS mediante Terraform, diseñada para alta disponibilidad y escalabilidad.
 
 Incluye VPC con subredes públicas y privadas, balanceo de carga y control de seguridad por capas.
@@ -50,7 +51,6 @@ Cada módulo Terraform es **completamente independiente** con inputs/outputs bie
 **Capa de Red (Networking):**
 - **VPC** 10.0.0.0/16 con 3 AZs
 - **Internet Gateway** para tráfico público entrante
-- **NAT Gateway** para egreso controlado desde subredes privadas
 - **Tablas de Rutas** segmentadas (pública/privada)
 
 **Capa de Acceso (Subredes):**
@@ -101,32 +101,6 @@ Esta infraestructura está diseñada para **DevOps moderno** con automatización
 
 ---
 
-## 🌍 Entornos de Despliegue
-
-La infraestructura soporta múltiples entornos con configuraciones específicas:
-
-### Entorno de Desarrollo (dev) - ✅ Implementado
-- **Propósito:** Testing, validación y desarrollo iterativo
-- **Instancias EC2:** t3.micro (1 instancia)
-- **RDS:** db.t3.micro con snapshots automáticos
-- **Costos:** ~$30-35/mes (optimizado)
-- **Característica:** Single-AZ, recuperable pero no HA
-- **Caso de uso:** Desarrollo de features, testing, validación
-
-### Entorno de Producción (prod) - 🚧 Estructura lista
-- **Propósito:** Aplicaciones críticas con SLA de disponibilidad
-- **Instancias EC2:** t3.micro a t3.small (Auto Scaling 1-3)
-- **RDS:** db.t3.micro Multi-AZ con failover automático
-- **Costos:** ~$81.50/mes (HA incluida)
-- **Característica:** Multi-AZ con replica en standby
-- **Caso de uso:** Producción, cargas críticas, 99.9% uptime
-
-### Entorno Staging (stage) - 🚧 Estructura disponible
-- **Propósito:** Validación pre-producción
-- **Configuración:** Idéntica a prod con datos sanitizados
-
----
-
 ## 📸 Screenshots
 
 ### Inicialización de Terraform
@@ -168,6 +142,32 @@ La infraestructura soporta múltiples entornos con configuraciones específicas:
 
 ---
 
+## 🌍 Entornos de Despliegue
+
+La infraestructura soporta múltiples entornos con configuraciones específicas:
+
+### Entorno de Desarrollo (dev) - ✅ Implementado
+- **Propósito:** Testing, validación y desarrollo iterativo
+- **Instancias EC2:** t3.micro (1 instancia)
+- **RDS:** db.t3.micro con snapshots automáticos
+- **Costos:** ~$30-35/mes (optimizado)
+- **Característica:** Single-AZ, recuperable pero no HA
+- **Caso de uso:** Desarrollo de features, testing, validación
+
+### Entorno de Producción (prod) - 🚧 Estructura lista
+- **Propósito:** Aplicaciones críticas con SLA de disponibilidad
+- **Instancias EC2:** t3.micro a t3.small (Auto Scaling 1-3)
+- **RDS:** db.t3.micro Multi-AZ con failover automático
+- **Costos:** ~$81.50/mes (HA incluida)
+- **Característica:** Multi-AZ con replica en standby
+- **Caso de uso:** Producción, cargas críticas, 99.9% uptime
+
+### Entorno Staging (stage) - 🚧 Estructura disponible
+- **Propósito:** Validación pre-producción
+- **Configuración:** Idéntica a prod con datos sanitizados
+
+---
+
 ## 🌐 Arquitectura de Red
 
 La arquitectura de red está construida siguiendo el patrón de red de tres capas, lo que proporciona seguridad en profundidad (defense in depth) mediante aislamiento de componentes. Cada capa tiene su propio conjunto de subredes y reglas de seguridad, permitiendo control granular del tráfico.
@@ -179,15 +179,15 @@ La arquitectura de red está construida siguiendo el patrón de red de tres capa
 
 ### Subredes Públicas
 - **Ubicación:** Conectadas directamente a Internet Gateway
-- **Uso:** ALB, NAT Gateway, bastion hosts (si aplica)
+- **Uso:** ALB, bastion hosts (si aplica)
 - **Enrutamiento:** Ruta por defecto (0.0.0.0/0) hacia Internet Gateway
 - **CIDR:** 10.0.1.0/24, 10.0.2.0/24, 10.0.3.0/24
 
 ### Subredes Privadas
 - **Ubicación:** Sin acceso directo a internet
 - **Uso:** Instancias EC2, bases de datos, aplicaciones
-- **Enrutamiento:** Ruta por defecto (0.0.0.0/0) hacia NAT Gateway
-- **CIDR:** 10.0.11.0/24, 10.0.12.0/24, 10.0.13.0/24
+- **Enrutamiento:** Acceso restringido, sin salida a internet en configuración actual
+- **CIDR:** 10.0.101.0/24, 10.0.102.0/24, 10.0.103.0/24
 
 ### Flujo de Tráfico y Enrutamiento
 
@@ -230,13 +230,12 @@ El flujo de tráfico en esta arquitectura sigue un patrón de **ingreso filtrado
 
 **Características técnicas del enrutamiento:**
 - **Ingreso:** Internet → IGW → Security Group → ALB → EC2
-- **Egreso:** EC2 → NAT Gateway → Internet (para actualizaciones y APIs)
 - **Intra-VPC:** Comunicación directa entre EC2 y RDS en la misma zona de disponibilidad
 - **Aislamiento:** Tráfico entre subredes públicas y privadas está completamente segregado
 
 ### Tablas de Rutas
 - **Tabla Pública:** Tráfico hacia IGW (0.0.0.0/0 → IGW)
-- **Tabla Privada:** Tráfico saliente hacia NAT Gateway (0.0.0.0/0 → NAT)
+- **Tabla Privada:** Acceso restringido, sin salida a internet por defecto
 - **Tráfico Local:** Todo el tráfico intra-VPC va directamente (10.0.0.0/16)
 
 ### Grupos de Seguridad (Firewalls)
@@ -285,7 +284,7 @@ El flujo de tráfico en esta arquitectura sigue un patrón de **ingreso filtrado
 
 **Componentes Implementados:**
 - **VPC:** 6 subredes (3 públicas, 3 privadas) en 3 AZs
-- **Networking:** IGW + NAT Gateway + Tablas de rutas
+- **Networking:** IGW + Tablas de rutas
 - **Load Balancing:** ALB con target groups dinámicos
 - **Compute:** Auto Scaling Group con Launch Templates
 - **Database:** RDS PostgreSQL (Multi-AZ ready)
@@ -307,7 +306,6 @@ modules/
 ├── 🌐 networking/
 │   ├─ VPC y subredes (públicas y privadas)
 │   ├─ Internet Gateway
-│   ├─ NAT Gateway
 │   ├─ Tablas de rutas
 │   └─ Asociaciones de subredes
 │
@@ -448,16 +446,15 @@ curl http://$(terraform output -raw alb_dns_name)/api/ping
 | EC2 (ASG) | 1x t3.micro | $7.50 |
 | RDS | db.t3.micro | $15.00 |
 | ALB | Estándar | $16.00 |
-| Puerta NAT | 1x + datos | $35.00 |
 | S3 + Datos | Uso mínimo | $6.00 |
 | CloudWatch | Logs/Métricas | $2.00 |
-| **TOTAL** | | **~$81.50** |
+| **TOTAL** | | **~$46.50** |
 
 **Consejos de optimización de costos:**
 - Usar instancias Spot (ahorrar 70%)
 - Programar ASG solo durante horario comercial
 - Eliminar logs antiguos (políticas de ciclo de vida)
-- Considerar puntos finales VPC para evitar NAT
+- Considerar VPC endpoints para futuras ampliaciones
 
 ---
 
@@ -470,7 +467,7 @@ curl http://$(terraform output -raw alb_dns_name)/api/ping
 | **Compute** | EC2 Auto Scaling | t3.micro (configurable) |
 | **Database** | RDS PostgreSQL | 15.15, Multi-AZ ready |
 | **Storage** | S3 | Versionado, Lifecycle policies |
-| **Networking** | VPC, ALB, NAT | 10.0.0.0/16, 3 AZs |
+| **Networking** | VPC, ALB | 10.0.0.0/16, 3 AZs |
 | **Monitoring** | CloudWatch | Logs + Alarms (ready) |
 | **Application** | Node.js Express | Backend referencia |
 | **Frontend** | Static HTML/CSS | Deployable en S3 |
@@ -520,8 +517,8 @@ Todos los módulos exportan salidas completas con descripciones:
 
 Licencia MIT - Libre para usar y modificar
 
----
 
+---
 ## 👨‍💻 Acerca de
 
 Construido como demostración de prácticas de Infraestructura como Código de nivel empresarial. Muestra experiencia en:
@@ -538,3 +535,29 @@ Construido como demostración de prácticas de Infraestructura como Código de n
 ---
 
 ⭐ **¡Dale una estrella a este repositorio** si lo encuentras útil!
+
+---
+
+## 👨‍💻 Autor
+
+**Luis Fernando Rodríguez Villada**
+
+Ingeniero DevOps | Especialista en Infraestructura en la Nube
+
+- 📧 **Email:** [luisfernando198912@gmail.com](mailto:luisfernando198912@gmail.com)
+- 🌐 **Portafolio:** [luisops.com](https://luisops.com)
+- 💼 **LinkedIn:** [luis-fernando-rodríguez-villada](https://linkedin.com)
+- 🐙 **GitHub:** [@luisrodvilladaorg](https://github.com/luisrodvilladaorg)
+
+### 🎯 Acerca de
+
+Este proyecto es una demostración de experiencia en:
+- ☁️ Arquitectura en la Nube AWS
+- 🔧 Infraestructura como Código (Terraform)
+- 🔐 Seguridad y Buenas Prácticas
+- 📈 Alta Disponibilidad y Escalabilidad
+- 💡 Automatización DevOps
+
+---
+
+**© 2026** - Todos los derechos reservados. Licencia MIT
