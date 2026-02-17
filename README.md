@@ -538,6 +538,17 @@ Construido como demostración de prácticas de Infraestructura como Código de n
 
 ---
 
+## 🎯 Acerca de
+
+Este proyecto es una demostración de experiencia en:
+- ☁️ Arquitectura en la Nube AWS
+- 🔧 Infraestructura como Código (Terraform)
+- 🔐 Seguridad y Buenas Prácticas
+- 📈 Alta Disponibilidad y Escalabilidad
+- 💡 Automatización DevOps
+
+---
+
 ## 👨‍💻 Autor
 
 **Luis Fernando Rodríguez Villada**
@@ -548,15 +559,6 @@ Ingeniero DevOps | Especialista en Infraestructura en la Nube
 - 🌐 **Portafolio:** [luisops.com](https://luisops.com)
 - 💼 **LinkedIn:** [luis-fernando-rodríguez-villada](https://linkedin.com)
 - 🐙 **GitHub:** [@luisrodvilladaorg](https://github.com/luisrodvilladaorg)
-
-### 🎯 Acerca de
-
-Este proyecto es una demostración de experiencia en:
-- ☁️ Arquitectura en la Nube AWS
-- 🔧 Infraestructura como Código (Terraform)
-- 🔐 Seguridad y Buenas Prácticas
-- 📈 Alta Disponibilidad y Escalabilidad
-- 💡 Automatización DevOps
 
 ---
 
