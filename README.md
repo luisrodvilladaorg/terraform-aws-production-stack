@@ -556,7 +556,6 @@ Este proyecto es una demostración de experiencia en:
 Ingeniero DevOps | Especialista en Infraestructura en la Nube
 
 - 📧 **Email:** [luisfernando198912@gmail.com](mailto:luisfernando198912@gmail.com)
-- 🌐 **Portafolio:** [luisops.com](https://luisops.com)
 - 💼 **LinkedIn:** [luis-fernando-rodríguez-villada](https://linkedin.com)
 - 🐙 **GitHub:** [@luisrodvilladaorg](https://github.com/luisrodvilladaorg)
 
