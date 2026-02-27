@@ -15,6 +15,7 @@ crash.*.log
 node_modules/
 backend-artifact/node_modules
 backend-artifact
+Comandos utiles
 ##################################
 # Terraform Backend Lock
 ##################################
