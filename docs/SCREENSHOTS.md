@@ -14,40 +14,33 @@
 *Proceso de inicialización de Terraform con descarga de proveedores y módulos. Se configura el backend remoto en S3 y se prepara el ambiente para gestionar la infraestructura como código.*
 
 
-### 2. 📦 Terraform Plan - Estado de Ejecución
-![Pipelines](images/pipelines.png)
-
-*Estado de ejecución de los pipelines de CI/CD. Muestra logs de validación, plan de cambios y ejecución automática de terraform apply en entornos designados.*
-
----
-
-### 3. 📦 AWS Resources - Resumen de Recursos por Tipo
+### 3. 📦 Terraform Plan - Resumen de Recursos por Tipo
 ![Resources Overview](images/Resources.png)
 
 *Vista general de los tipos de recursos creados en AWS categorizados por servicio (EC2, RDS, S3, etc.).*
 
 ---
 
-### 4. 📦 AWS Resources 2 - Detalles Adicionales
+### 4. 📦 AWS Resources 2 - Detalles Adicionales Modulo Networking
 ![Resources Detail 2](images/Resources2.png)
 
 *Detalles adicionales de recursos con información de disponibilidad, estado y configuración específica.*
 
 ---
 
-### 5. 📦 AWS Resources 3 - Recursos de Red
+### 5. 📦 AWS Resources 3 - ALB & RDS
 ![Resources Network](images/Resources3.png)
 
 *Recursos de red detallados incluyendo VPC, subnets, route tables y NAT Gateway con configuración específica.*
 
 
-### 6. 📦 AWS Resources 4 - Recursos de Compute
+### 6. 📦 AWS Resources 4 - Recursos de RDS
 ![Resources Compute](images/Resources.4.png)
 
 *Recursos de compute incluyendo Auto Scaling Group, Launch Templates y configuración de instancias EC2.*
 
 
-### 7. 📦 AWS Resources 5 - Recursos de Base de Datos
+### 7. 📦 Terraform Plan Completado - 80 + Recursos
 ![Resources Database](images/Resources.5.png)
 
 *Recursos de base de datos RDS PostgreSQL con configuración Multi-AZ, snapshots y parámetros de seguridad.*
@@ -59,6 +52,12 @@
 *Ejecución controlada de `terraform destroy` demostrando la capacidad de desmantelar completamente la infraestructura. Muestra cómo con un comando se liberan todos los 80+ recursos de forma segura.*
 
 
+
+
+                                    
+
+*Las siguientes capturas reflejan algunos de los recursos creados, esta vez explorandolo desde la Consola de AWS.*
+---
 
 ### 3. 🔀 Tablas de Rutas - Enrutamiento de Tráfico
 ![Route Tables](images/route-tables.png)
@@ -166,48 +165,19 @@
 ![Terraform Destroy](images/terraform-destroy.png)
 
 *Ejecución controlada de `terraform destroy` demostrando la capacidad de desmantelar completamente la infraestructura. Muestra cómo con un comando se liberan todos los 80+ recursos de forma segura.*
----
-
-### 21. 📦 AWS Resources - Resumen de Recursos por Tipo
-![Resources Overview](images/Resources.png)
-
-*Vista general de los tipos de recursos creados en AWS categorizados por servicio (EC2, RDS, S3, etc.).*
----
-
-### 22. 📦 AWS Resources 2 - Detalles Adicionales
-![Resources Detail 2](images/Resources2.png)
-
-*Detalles adicionales de recursos con información de disponibilidad, estado y configuración específica.*
----
-
-### 23. 📦 AWS Resources 3 - Recursos de Red
-![Resources Network](images/Resources3.png)
-
-*Recursos de red detallados incluyendo VPC, subnets, route tables y NAT Gateway con configuración específica.*
----
-
-### 24. 📦 AWS Resources 4 - Recursos de Compute
-![Resources Compute](images/Resources.4.png)
-
-*Recursos de compute incluyendo Auto Scaling Group, Launch Templates y configuración de instancias EC2.*
 
 ---
 
-### 25. 📦 AWS Resources 5 - Recursos de Base de Datos
-![Resources Database](images/Resources.5.png)
 
-*Recursos de base de datos RDS PostgreSQL con configuración Multi-AZ, snapshots y parámetros de seguridad.*
----
 
 ## 📊 Resumen de Capturas
 | 1 | Terraform Init | `terraform-init.png` | ✅ |
-| 2 | Terraform Plan | `pipelines.png` | ✅ |
-| 3 | AWS Resources | `Resources.png` | ✅ |
-| 4 | AWS Resources 2 | `Resources2.png` | ✅ |
-| 5 | AWS Resources 3 | `Resources3.png` | ✅ |
-| 6 | AWS Resources 4 | `Resources.4.png` | ✅ |
-| 7 | AWS Resources 5 | `Resources.5.png` | ✅ |
-| 8 | Terraform Destroy | `terraform-destroy.png` | ✅ |
+| 2 | AWS Resources | `Resources.png` | ✅ |
+| 3 | AWS Resources 2 | `Resources2.png` | ✅ |
+| 4 | AWS Resources 3 | `Resources3.png` | ✅ |
+| 5 | AWS Resources 4 | `Resources.4.png` | ✅ |
+| 6 | AWS Resources 5 | `Resources.5.png` | ✅ |
+| 7 | Terraform Destroy | `terraform-destroy.png` | ✅ |
 
 ---
 
