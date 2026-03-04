@@ -165,7 +165,6 @@
 ![Terraform Destroy](images/terraform-destroy.png)
 
 *Ejecución controlada de `terraform destroy` demostrando la capacidad de desmantelar completamente la infraestructura. Muestra cómo con un comando se liberan todos los 80+ recursos de forma segura.*
-
 ---
 
 
