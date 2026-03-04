@@ -1,16 +1,4 @@
-variable "project_name" {
-  description = "Name of the project for resource naming and tagging"
-  type        = string
-}
 
-variable "environment" {
-  description = "Environment name (dev, staging, prod)"
-  type        = string
-  validation {
-    condition     = contains(["dev", "staging", "prod"], var.environment)
-    error_message = "Environment must be dev, staging or prod."
-  }
-}
 
 variable "tags" {
   description = "Additional tags to apply to all resources"
@@ -77,3 +65,20 @@ variable "db_password" {
 }
 
 
+//Variables for ASG to ALB autoscaling  using cpu utilization cloudwatch metric
+
+variable "project_name" {
+  type = string
+}
+
+variable "environment" {
+  type = string
+}
+
+variable "scale_up_cpu_threshold" {
+  default = 70
+}
+
+variable "scale_down_cpu_threshold" {
+  default = 20
+}
