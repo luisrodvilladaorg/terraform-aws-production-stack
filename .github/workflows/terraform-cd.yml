@@ -37,34 +37,12 @@ jobs:
               working-directory: envs/${{ inputs.environment }}
               run: terraform init -input=false
 
-            # 4.0️⃣ Validate environment input
-            - name: Validate environment input
-              run: |
-                if [ "${{ inputs.environment }}" != "dev" ] && [ "${{ inputs.environment }}" != "prod" ]; then
-                  echo "Invalid environment: ${{ inputs.environment }}. Allowed: dev, prod"
-                  exit 1
-                fi
-
-            # 4.1️⃣ Ensure required secret exists
-            - name: Check required secrets
-              env:
-                TF_VAR_db_password: ${{ secrets.TF_VAR_db_password }}
-              run: |
-                if [ -z "$TF_VAR_db_password" ]; then
-                  echo "Missing required secret: TF_VAR_db_password"
-                  exit 1
-                fi
-
             # 5️⃣ Terraform Plan (preview)
             - name: Terraform Plan
               working-directory: envs/${{ inputs.environment }}
-              env:
-                TF_VAR_db_password: ${{ secrets.TF_VAR_db_password }}
               run: terraform plan -input=false
 
             # 6️⃣ Terraform Apply (automatic, confirmed via workflow_dispatch)
             - name: Terraform Apply
               working-directory: envs/${{ inputs.environment }}
-              env:
-                TF_VAR_db_password: ${{ secrets.TF_VAR_db_password }}
               run: terraform apply -auto-approve

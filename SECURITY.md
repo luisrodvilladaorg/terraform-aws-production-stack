@@ -12,7 +12,7 @@ Security practices implemented in this Infrastructure as Code project.
 *.tfvars            # Terraform variable files
 *.tfvars.json       # JSON variable files
 .env                # Environment variables
-.env.*              # Specific .env files
+.env.*              # Environment-specific files
 .secrets            # Secrets directory
 
 # State and lock files
@@ -45,7 +45,7 @@ variable "db_password" {
 
 ### Local Development
 ```bash
-# Create a local file (not versioned)
+# Create local file (not versioned)
 cat > envs/dev/terraform.tfvars <<EOF
 db_name     = "appdb"
 db_user     = "appuser"
@@ -100,12 +100,12 @@ module "rds" {
 
 ## 🔑 SSH/Key Management
 
-### For SSH access between instances
+### For SSH between instances
 ```bash
 # Do NOT hardcode keys in user-data
 # Use instead:
 - AWS Systems Manager Session Manager
-- AWS Secrets Manager for rotating keys
+- AWS Secrets Manager for key rotation
 - VPC endpoints for private communication
 ```
 
@@ -115,19 +115,19 @@ module "rds" {
 
 ### CloudWatch Logs
 ```bash
-# All centralized and encrypted logs
+# All logs centralized and encrypted
 - Application logs
 - ALB access logs → S3
 - VPC Flow Logs (recommended)
-- CloudTrail for infrastructure changes
+- CloudTrail for resource changes
 ```
 
-### Log verification
+### Log Verification
 ```bash
 # View application logs
 aws logs tail /aws/ec2/app-logs --follow
 
-# Export for auditing
+# Export for audit
 aws s3 cp s3://my-alb-logs/ ./logs/ --recursive
 ```
 
@@ -137,7 +137,7 @@ aws s3 cp s3://my-alb-logs/ ./logs/ --recursive
 
 ### RDS Password
 ```bash
-# Change password (without downtime)
+# Change password (no downtime)
 aws rds modify-db-instance \
   --db-instance-identifier my-stack-dev-postgres \
   --master-user-password NewPassword123! \
@@ -155,13 +155,13 @@ aws iam delete-access-key --user-name terraform-user --access-key-id OLD_KEY
 
 ## 🚨 Secret Detection
 
-### Pre-commit hook
+### Pre-commit Hook
 ```bash
 # Install git-secrets
-brew install git-secrets  # macOS
-apt-get install git-secrets  # Linux
+brew install git-secrets      # macOS
+apt-get install git-secrets   # Linux
 
-# Configure for repository
+# Configure repository
 git secrets --install
 git secrets --register-aws
 ```
@@ -187,14 +187,14 @@ git secrets --register-aws
 - Hardcode passwords in source code
 - Commit real `.tfvars` files
 - Use AWS root credentials
-- Print secrets in logs
-- Share credentials by email/chat
+- Expose secrets in logs
+- Share credentials through email/chat
 
 ---
 
 ## 🔍 Security Verification
 
-### Scan for vulnerabilities
+### Scan vulnerabilities
 ```bash
 # Terraform security scanning
 tfsec .
@@ -227,7 +227,7 @@ If you find a security vulnerability:
 1. **DO NOT** publish it in public issues
 2. Contact: **luisfernando198912@gmail.com**
 3. Describe the issue with details
-4. Wait for response (maximum 48 hours)
+4. Wait for a response (maximum 48 hours)
 
 ---
 
