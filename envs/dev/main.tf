@@ -46,7 +46,7 @@ module "asg" {
   instance_type         = "t3.micro"
   desired_capacity      = 1
   min_size              = 1
-  max_size              = 1
+  max_size              = 2
   instance_profile_name = module.iam.instance_profile_name
   alb_security_group_id = module.alb.alb_security_group_id
 
@@ -98,3 +98,7 @@ module "rds" {
   db_user     = var.db_user
   db_password = var.db_password
 }
+
+
+
+
