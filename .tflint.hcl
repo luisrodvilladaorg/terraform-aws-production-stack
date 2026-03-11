@@ -1,10 +1,10 @@
-# Habilita el ruleset oficial de AWS para TFLint
+# Enable the official AWS ruleset for TFLint
 plugin "aws" {
   enabled = true
 
-  # Versión estable del ruleset AWS
+  # Stable version of the AWS ruleset
   version = "0.33.0"
 
-  # Fuente oficial del plugin
+  # Official plugin source
   source  = "github.com/terraform-linters/tflint-ruleset-aws"
 }

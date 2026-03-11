@@ -1,62 +1,62 @@
-# 🔒 Guía de Seguridad
+# 🔒 Security Guide
 
-Prácticas de seguridad implementadas en este proyecto de Infraestructura como Código.
+Security practices implemented in this Infrastructure as Code project.
 
 ---
 
-## ✅ Seguridad en el Repositorio GIT
+## ✅ Git Repository Security
 
-### Archivos Ignorados (No comprometidos)
+### Ignored Files (not committed)
 ```
-# Credenciales y secretos
-*.tfvars           # Archivos de variables de Terraform
-*.tfvars.json      # Variables en formato JSON
-.env               # Variables de entorno
-.env.*             # Archivos .env específicos
-.secrets           # Carpeta de secretos
+# Credentials and secrets
+*.tfvars            # Terraform variable files
+*.tfvars.json       # JSON variable files
+.env                # Environment variables
+.env.*              # Specific .env files
+.secrets            # Secrets directory
 
-# Estado y locks
-*.tfstate          # Estado de Terraform
-*.tfstate.*        # Backups de estado
-.terraform.lock.hcl # Lock file de Terraform
+# State and lock files
+*.tfstate           # Terraform state
+*.tfstate.*         # State backups
+.terraform.lock.hcl # Terraform lock file
 ```
 
-### Variables Sensibles
+### Sensitive Variables
 
-Todas las variables sensibles están marcadas con `sensitive = true`:
+All sensitive variables are marked with `sensitive = true`:
 
 ```hcl
 variable "db_password" {
   description = "Database master password"
   type        = string
-  sensitive   = true  # No se mostrará en logs
+  sensitive   = true  # Hidden from logs
 }
 ```
 
-**Nunca incluir en código:**
-- Contraseñas
-- API Keys
+**Never include in code:**
+- Passwords
+- API keys
 - Tokens
-- Credenciales AWS
+- AWS credentials
 
 ---
 
-## 🔐 Gestión de Credenciales
+## 🔐 Credential Management
 
-### En Desarrollo Local
+### Local Development
 ```bash
-# Crear archivo local (no versionado)
+# Create a local file (not versioned)
 cat > envs/dev/terraform.tfvars <<EOF
 db_name     = "appdb"
 db_user     = "appuser"
-db_password = "TuContraseñaSegura123!"
+db_password = "YourSecurePassword123!"
 EOF
 
-# Nunca commitear este archivo
+# Never commit this file
 ```
 
-### En Producción (Recomendado)
-Usar **AWS Secrets Manager**:
+### Production (Recommended)
+Use **AWS Secrets Manager**:
 
 ```hcl
 data "aws_secretsmanager_secret_version" "db_password" {
@@ -70,15 +70,15 @@ module "rds" {
 
 ---
 
-## 🛡️ IAM y Permisos
+## 🛡️ IAM and Permissions
 
-### Principio de Menor Privilegio
-- ✅ Roles IAM con permisos específicos
-- ✅ No hay credenciales hardcodeadas en instancias
-- ✅ Instance Profiles para acceso seguro a servicios AWS
-- ✅ Security Groups restrictivos
+### Principle of Least Privilege
+- ✅ IAM roles with specific permissions
+- ✅ No hardcoded credentials on instances
+- ✅ Instance profiles for secure AWS service access
+- ✅ Restrictive security groups
 
-### Ejemplo de política mínima
+### Minimal policy example
 ```json
 {
   "Version": "2012-10-17",
@@ -98,103 +98,103 @@ module "rds" {
 
 ---
 
-## 🔑 Gestión de SSH/Keys
+## 🔑 SSH/Key Management
 
-### Para SSH entre instancias
+### For SSH access between instances
 ```bash
-# NO hardcodear claves en user-data
-# Usar en su lugar:
+# Do NOT hardcode keys in user-data
+# Use instead:
 - AWS Systems Manager Session Manager
-- AWS Secrets Manager para claves rotativas
-- VPC endpoints para comunicación privada
+- AWS Secrets Manager for rotating keys
+- VPC endpoints for private communication
 ```
 
 ---
 
-## 📋 Auditoría y Logging
+## 📋 Auditing and Logging
 
 ### CloudWatch Logs
 ```bash
-# Todos los logs centralizados y encriptados
+# All centralized and encrypted logs
 - Application logs
 - ALB access logs → S3
-- VPC Flow Logs (recomendado)
-- CloudTrail para cambios en recursos
+- VPC Flow Logs (recommended)
+- CloudTrail for infrastructure changes
 ```
 
-### Verificación de logs
+### Log verification
 ```bash
-# Ver logs de aplicación
+# View application logs
 aws logs tail /aws/ec2/app-logs --follow
 
-# Exportar para auditoría
+# Export for auditing
 aws s3 cp s3://my-alb-logs/ ./logs/ --recursive
 ```
 
 ---
 
-## 🔄 Rotación de Credenciales
+## 🔄 Credential Rotation
 
-### Contraseña RDS
+### RDS Password
 ```bash
-# Cambiar contraseña (sin downtime)
+# Change password (without downtime)
 aws rds modify-db-instance \
   --db-instance-identifier my-stack-dev-postgres \
   --master-user-password NewPassword123! \
   --apply-immediately
 ```
 
-### AWS Access Keys (para CI/CD)
+### AWS Access Keys (for CI/CD)
 ```bash
-# Rotar cada 90 días
+# Rotate every 90 days
 aws iam create-access-key --user-name terraform-user
 aws iam delete-access-key --user-name terraform-user --access-key-id OLD_KEY
 ```
 
 ---
 
-## 🚨 Detección de Secretos
+## 🚨 Secret Detection
 
-### Pre-commit Hook
+### Pre-commit hook
 ```bash
-# Instalar git-secrets
+# Install git-secrets
 brew install git-secrets  # macOS
 apt-get install git-secrets  # Linux
 
-# Configurar para repo
+# Configure for repository
 git secrets --install
 git secrets --register-aws
 ```
 
-### GitHub: Secret Scanning
-- ✅ Habilitado por defecto en repos públicos
-- ✅ Detecta y revoca tokens automáticamente
-- ✅ Notifica en PRs
+### GitHub Secret Scanning
+- ✅ Enabled by default on public repositories
+- ✅ Detects and revokes tokens automatically
+- ✅ Notifies on pull requests
 
 ---
 
-## 📱 Mejores Prácticas
+## 📱 Best Practices
 
-### ✅ HACER
-- Usar variables de ambiente
-- Almacenar secretos en AWS Secrets Manager
-- Rotar credenciales regularmente
-- Auditar acceso con CloudTrail
-- Encriptar estado de Terraform en S3
-- Usar VPC endpoints privados
+### ✅ DO
+- Use environment variables
+- Store secrets in AWS Secrets Manager
+- Rotate credentials regularly
+- Audit access with CloudTrail
+- Encrypt Terraform state in S3
+- Use private VPC endpoints
 
-### ❌ NO HACER
-- Hardcodear contraseñas en código
-- Commitear archivos `.tfvars` reales
-- Usar credenciales root de AWS
-- Pasar secretos en logs
-- Compartir credenciales por email/chat
+### ❌ DON'T
+- Hardcode passwords in source code
+- Commit real `.tfvars` files
+- Use AWS root credentials
+- Print secrets in logs
+- Share credentials by email/chat
 
 ---
 
-## 🔍 Verificación de Seguridad
+## 🔍 Security Verification
 
-### Escanear vulnerabilidades
+### Scan for vulnerabilities
 ```bash
 # Terraform security scanning
 tfsec .
@@ -206,32 +206,32 @@ checkov -d .
 pre-commit run --all-files
 ```
 
-### Auditar estado actual
+### Audit current state
 ```bash
-# Ver quién accede a qué
+# Check who accessed what
 aws cloudtrail lookup-events --max-results 50
 
-# Revisar security groups
+# Review security groups
 aws ec2 describe-security-groups --query 'SecurityGroups[].{Name:GroupName,Rules:IpPermissions}'
 
-# Verificar RDS encryption
+# Verify RDS encryption
 aws rds describe-db-instances --query 'DBInstances[].{DBName:DBInstanceIdentifier,Encrypted:StorageEncrypted}'
 ```
 
 ---
 
-## 📞 Reportar Vulnerabilidades
+## 📞 Reporting Vulnerabilities
 
-Si encuentras una vulnerabilidad de seguridad:
+If you find a security vulnerability:
 
-1. **NO** la publiques en issues públicas
-2. Contáctame en: **luisfernando198912@gmail.com**
-3. Describe el problema con detalles
-4. Aguarda respuesta (máximo 48 horas)
+1. **DO NOT** publish it in public issues
+2. Contact: **luisfernando198912@gmail.com**
+3. Describe the issue with details
+4. Wait for response (maximum 48 hours)
 
 ---
 
-## 📚 Referencias Adicionales
+## 📚 Additional References
 
 - [AWS Security Best Practices](https://docs.aws.amazon.com/security/)
 - [Terraform Security Guidelines](https://www.terraform.io/cloud-docs/security)
@@ -240,5 +240,5 @@ Si encuentras una vulnerabilidad de seguridad:
 
 ---
 
-**Última actualización:** 2026-02-17  
-**Versión:** 1.0
+**Last update:** 2026-02-17  
+**Version:** 1.0

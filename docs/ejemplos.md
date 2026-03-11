@@ -1,168 +1,168 @@
-# 🚀 Ejemplos de Despliegue
+# 🚀 Deployment Examples
 
-Ejemplos de inicio rápido para desplegar infraestructura AWS con Terraform.
+Quick-start examples to deploy AWS infrastructure with Terraform.
 
 ---
 
-## ⚡ Despliegue Rápido (5 Minutos)
+## ⚡ Quick Deployment (5 Minutes)
 
-Despliegue completo desde cero hasta infraestructura en ejecución.
+End-to-end deployment from zero to running infrastructure.
 
-### Requisitos Previos
+### Prerequisites
 ```bash
 terraform --version  # >= 1.5.0
-aws sts get-caller-identity  # Verificar acceso a AWS
+aws sts get-caller-identity  # Verify AWS access
 ```
 
-### Pasos de Despliegue
+### Deployment Steps
 
 ```bash
-# 1. Navegar al entorno
+# 1. Go to the environment
 cd envs/dev
 
-# 2. Crear configuración
+# 2. Create configuration
 cat > terraform.tfvars <<EOF
-project_name = "mi-stack"
+project_name = "my-stack"
 environment  = "dev"
 db_name      = "appdb"
 db_user      = "admin"
-db_password  = "ContraseñaSegura123!"  # MANTENER ESTE ARCHIVO FUERA DE GIT
+db_password  = "SecurePassword123!"  # KEEP THIS FILE OUT OF GIT
 EOF
 
-# 3. Inicializar y desplegar
+# 3. Initialize and deploy
 terraform init
 terraform plan
 terraform apply -auto-approve
 
-# ⏱️ Esperar ~8 minutos para el despliegue
+# ⏱️ Wait ~8 minutes for deployment
 ```
 
-### Verificar Despliegue
+### Verify Deployment
 
 ```bash
-# Obtener URL de la aplicación
+# Get application URL
 ALB_URL=$(terraform output -raw alb_dns_name)
 
-# Probar sitio estático
+# Test static site
 curl http://$ALB_URL
 
-# Probar API
+# Test API
 curl http://$ALB_URL/api/ping
-# Respuesta: {"status":"ok","host":"ip-10-0-x-x"}
+# Response: {"status":"ok","host":"ip-10-0-x-x"}
 
-# Probar conexión a base de datos
+# Test database connectivity
 curl http://$ALB_URL/api/ping-db
-# Respuesta: {"status":"ok","time":"2026-02-04T..."}
+# Response: {"status":"ok","time":"2026-02-04T..."}
 ```
 
-**Resultado:** 30+ recursos AWS desplegados y probados ✅
+**Result:** 30+ AWS resources deployed and validated ✅
 
 ---
 
-## 💰 Configuración Optimizada para Costos
+## 💰 Cost-Optimized Configuration
 
-Configuración de costo mínimo para pruebas (~$50/mes).
+Minimal-cost configuration for testing (~$50/month).
 
-### Modificaciones
+### Changes
 
-Editar `envs/dev/main.tf`:
+Edit `envs/dev/main.tf`:
 
 ```hcl
 module "asg" {
   source = "../../modules/asg"
   
-  # ... otras variables ...
+  # ... other variables ...
   
   instance_type    = "t3.micro"
   desired_capacity = 1
   min_size         = 1
-  max_size         = 1  # Sin auto-escalado
+  max_size         = 1  # No auto-scaling
 }
 
 module "rds" {
   source = "../../modules/rds"
   
-  # ... otras variables ...
+  # ... other variables ...
   
   instance_class    = "db.t3.micro"
-  allocated_storage = 20  # Almacenamiento mínimo
+  allocated_storage = 20  # Minimum storage
 }
 ```
 
-**Ahorro:** ~40% de reducción en costos mensuales
+**Savings:** ~40% lower monthly cost
 
 ---
 
-## 🏢 Configuración Lista para Producción
+## 🏢 Production-Ready Configuration
 
-Configuración de alta disponibilidad para cargas de trabajo en producción.
+High-availability setup for production workloads.
 
 ### terraform.tfvars
 ```hcl
-project_name = "app-produccion"
+project_name = "production-app"
 environment  = "prod"
 
-# Credenciales seguras (usar AWS Secrets Manager en prod real)
+# Secure credentials (use AWS Secrets Manager in real prod)
 db_name     = "production_db"
 db_user     = "prod_admin"
-db_password = "Contraseña!Fuerte2026"
+db_password = "StrongPassword!2026"
 ```
 
-### Configuración Mejorada de ASG
+### Enhanced ASG Configuration
 
 ```hcl
 module "asg" {
   source = "../../modules/asg"
   
-  # ... otras variables ...
+  # ... other variables ...
   
   instance_type    = "t3.small"
-  desired_capacity = 3  # Siempre 3 instancias
-  min_size         = 2  # Mínimo para HA
-  max_size         = 6  # Escalar hasta 6
+  desired_capacity = 3  # Always 3 instances
+  min_size         = 2  # Minimum for HA
+  max_size         = 6  # Scale up to 6
 }
 ```
 
-**Costo:** ~$180-220/mes  
-**Beneficios:** Alta disponibilidad, auto-escalado, multi-AZ
+**Cost:** ~$180-220/month  
+**Benefits:** High availability, auto-scaling, multi-AZ
 
 ---
 
-## 🔍 Monitoreo y Verificación
+## 🔍 Monitoring and Validation
 
-### Verificar Estado de la Infraestructura
+### Verify Infrastructure State
 
 ```bash
-# Listar todos los recursos creados
+# List all created resources
 terraform state list
 
-# Ver recurso específico
+# Show a specific resource
 terraform state show module.networking.aws_vpc.this
 
-# Obtener todos los outputs
+# Print all outputs
 terraform output
 ```
 
-### Verificación con AWS CLI
+### Verification with AWS CLI
 
 ```bash
-# Verificar VPC
+# Check VPC
 aws ec2 describe-vpcs \
-  --filters "Name=tag:Project,Values=mi-stack" \
+  --filters "Name=tag:Project,Values=my-stack" \
   --region eu-west-3
 
-# Verificar salud del ASG
+# Check ASG health
 aws autoscaling describe-auto-scaling-groups \
-  --auto-scaling-group-names mi-stack-dev-asg \
+  --auto-scaling-group-names my-stack-dev-asg \
   --region eu-west-3
 
-# Verificar estado de RDS
+# Check RDS status
 aws rds describe-db-instances \
-  --db-instance-identifier mi-stack-dev-postgres \
+  --db-instance-identifier my-stack-dev-postgres \
   --region eu-west-3 \
   --query 'DBInstances[0].DBInstanceStatus'
 
-# Listar instancias EC2 en ejecución
+# List running EC2 instances
 aws ec2 describe-instances \
   --filters "Name=tag:Environment,Values=dev" \
             "Name=instance-state-name,Values=running" \
@@ -173,120 +173,120 @@ aws ec2 describe-instances \
 
 ---
 
-## 🛠️ Escenarios Comunes
+## 🛠️ Common Scenarios
 
-### Actualizar Código de la Aplicación
+### Update Application Code
 
 ```bash
-# 1. Modificar user-data en modules/asg/main.tf
-# 2. Aplicar cambios
+# 1. Modify user-data in modules/asg/main.tf
+# 2. Apply changes
 terraform apply
 
-# Terraform hará:
-# - Crear nueva versión de launch template
-# - Actualización gradual de instancias (sin downtime)
+# Terraform will:
+# - Create a new launch template version
+# - Gradually roll instances (no downtime)
 ```
 
-### Escalar Hacia Arriba/Abajo
+### Scale Up/Down
 
 ```bash
-# Editar terraform.tfvars
+# Edit terraform.tfvars
 desired_capacity = 5
 max_size         = 10
 
-# Aplicar
+# Apply
 terraform apply
 ```
 
-### Cambiar Contraseña de Base de Datos
+### Change Database Password
 
 ```bash
-# Editar terraform.tfvars
-db_password = "NuevaContraseñaSegura123!"
+# Edit terraform.tfvars
+db_password = "MyNewSecurePassword123!"
 
-# Aplicar (activará modificación de BD)
+# Apply (triggers DB modification)
 terraform apply
 ```
 
 ---
 
-## 🚨 Solución de Problemas
+## 🚨 Troubleshooting
 
-### Problema: ALB retorna 502 Bad Gateway
+### Issue: ALB returns 502 Bad Gateway
 
-**Causa:** Las instancias aún no están listas  
-**Solución:** Esperar 2-3 minutos para que el script de user-data se complete
+**Cause:** Instances are not ready yet  
+**Fix:** Wait 2-3 minutes for user-data script completion
 
 ```bash
-# Verificar salud del target
+# Check target health
 aws elbv2 describe-target-health \
   --target-group-arn $(terraform output -raw target_group_arn)
 ```
 
-### Problema: No se puede conectar a RDS
+### Issue: Cannot connect to RDS
 
-**Causa:** Configuración incorrecta del security group  
-**Solución:** Verificar security group del ASG en la entrada RDS
+**Cause:** Incorrect security group configuration  
+**Fix:** Verify ASG security group is allowed in RDS ingress rules
 
 ```bash
-# Verificar security group de RDS
+# Check security group outputs
 terraform output | grep security_group
 ```
 
-### Problema: Costos Altos
+### Issue: High Costs
 
-**Causa:** Sin NAT Gateway en la infraestructura actual  
-**Solución:** Para dev, la infraestructura es economica sin NAT Gateway
+**Cause:** Oversized compute/database settings  
+**Fix:** Use dev sizing and scheduling in non-production environments
 
 ---
 
-## 🧹 Limpieza
+## 🧹 Cleanup
 
-### Destruir Infraestructura
+### Destroy Infrastructure
 
 ```bash
-# Vista previa de lo que se eliminará
+# Preview destruction
 terraform plan -destroy
 
-# Destruir todos los recursos
+# Destroy all resources
 terraform destroy -auto-approve
 
-# Verificar eliminación
+# Verify cleanup
 aws ec2 describe-vpcs \
-  --filters "Name=tag:Project,Values=mi-stack" \
+  --filters "Name=tag:Project,Values=my-stack" \
   --region eu-west-3
 ```
 
-⚠️ **Importante:** ¡Esto elimina TODOS los recursos permanentemente!
+⚠️ **Important:** This permanently deletes ALL resources.
 
 ---
 
-## 🎯 Escenarios Avanzados
+## 🎯 Advanced Scenarios
 
-### Despliegue Multi-Entorno
+### Multi-Environment Deployment
 
 ```bash
-# Desplegar dev
+# Deploy dev
 cd envs/dev
 terraform workspace new dev
 terraform apply -var-file="dev.tfvars"
 
-# Desplegar staging
+# Deploy staging
 terraform workspace new staging
 terraform apply -var-file="staging.tfvars"
 
-# Listar workspaces
+# List workspaces
 terraform workspace list
 ```
 
-### CIDR VPC Personalizado
+### Custom VPC CIDR
 
 ```hcl
-# En main.tf
+# In main.tf
 module "networking" {
   source = "../../modules/networking"
   
-  vpc_cidr = "172.16.0.0/16"  # Rango personalizado
+  vpc_cidr = "172.16.0.0/16"  # Custom range
   
   public_subnet_cidrs = [
     "172.16.1.0/24",
@@ -304,30 +304,30 @@ module "networking" {
 
 ---
 
-## 📊 Estimación de Costos
+## 📊 Cost Estimation
 
-Antes de desplegar, estimar costos:
+Before deploying, estimate costs:
 
 ```bash
-# Usar AWS Pricing Calculator
-# Navegar a: https://calculator.aws/
+# Use AWS Pricing Calculator
+# Open: https://calculator.aws/
 
-# O usar Infracost (herramienta CLI)
+# Or use Infracost CLI
 infracost breakdown --path envs/dev
 ```
 
-**Costos esperados:**
-- **Dev:** ~$81/mes
-- **Prod (HA):** ~$180/mes
+**Expected costs:**
+- **Dev:** ~$81/month
+- **Prod (HA):** ~$180/month
 
 ---
 
-## 🔗 Recursos Adicionales
+## 🔗 Additional Resources
 
-- [Proveedor Terraform AWS](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
-- [Calculadora de Precios AWS](https://calculator.aws/)
-- [README Principal](../README.md)
+- [Terraform AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
+- [AWS Pricing Calculator](https://calculator.aws/)
+- [Main README](../README.md)
 
 ---
 
-**💡 Consejo Pro:** ¡Siempre ejecutar `terraform plan` antes de `apply` para revisar cambios!
+**💡 Pro Tip:** Always run `terraform plan` before `apply` to review changes.

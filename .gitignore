@@ -1,6 +1,7 @@
 ##################################
 # Terraform
 ##################################
+PIPELINE_CHECKLIST
 Apuntes
 .terraform/
 *.tfstate
@@ -15,7 +16,7 @@ crash.*.log
 node_modules/
 backend-artifact/node_modules
 backend-artifact
-Comandos utiles
+useful-commands
 ##################################
 # Terraform Backend Lock
 ##################################
