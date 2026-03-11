@@ -1,175 +1,185 @@
-# 📸 Galería de Screenshots - Despliegue de Infraestructura AWS
+# 📸 Screenshot Gallery - AWS Infrastructure Deployment
 
-> Colección completa de capturas del proceso de despliegue, configuración y operación de la infraestructura Terraform en AWS
+> Complete screenshot collection of deployment, configuration, and operations for Terraform infrastructure on AWS.
 
-[← Volver al README](../README.md)
+[← Back to README](../README.md)
 
 ---
 
-## 📸 Capturas del Despliegue
+## 📸 Deployment Screenshots
 
-### 1. 🏗️ Terraform Init - Inicialización del Proyecto
+### 1. 🏗️ Terraform Init - Project Initialization
 ![Terraform init](images/terraform-init.png)
 
-*Proceso de inicialización de Terraform con descarga de proveedores y módulos. Se configura el backend remoto en S3 y se prepara el ambiente para gestionar la infraestructura como código.*
+*Terraform initialization process with provider and module downloads. The remote S3 backend is configured and the environment is prepared to manage infrastructure as code.*
 
-
-### 3. 📦 Terraform Plan - Resumen de Recursos por Tipo
+### 3. 📦 Terraform Plan - Resource Summary by Type
 ![Resources Overview](images/Resources.png)
 
-*Vista general de los tipos de recursos creados en AWS categorizados por servicio (EC2, RDS, S3, etc.).*
+*Overview of AWS resource types grouped by service (EC2, RDS, S3, etc.).*
 
 ---
 
-### 4. 📦 AWS Resources 2 - Detalles Adicionales Modulo Networking
+### 4. 📦 AWS Resources 2 - Additional Networking Module Details
 ![Resources Detail 2](images/Resources2.png)
 
-*Detalles adicionales de recursos con información de disponibilidad, estado y configuración específica.*
+*Additional resource details including availability, status, and configuration specifics.*
 
 ---
 
 ### 5. 📦 AWS Resources 3 - ALB & RDS
 ![Resources Network](images/Resources3.png)
 
-*Recursos de red detallados incluyendo VPC, subnets, route tables y NAT Gateway con configuración específica.*
+*Detailed network resources including VPC, subnets, route tables, and NAT Gateway configuration.*
 
-
-### 6. 📦 AWS Resources 4 - Recursos de RDS
+### 6. 📦 AWS Resources 4 - RDS Resources
 ![Resources Compute](images/Resources.4.png)
 
-*Recursos de compute incluyendo Auto Scaling Group, Launch Templates y configuración de instancias EC2.*
+*Compute resources including Auto Scaling Group, Launch Templates, and EC2 instance configuration.*
 
-
-### 7. 📦 Terraform Plan Completado - 80 + Recursos
+### 7. 📦 Terraform Plan Complete - 80+ Resources
 ![Resources Database](images/Resources.5.png)
 
-*Recursos de base de datos RDS PostgreSQL con configuración Multi-AZ, snapshots y parámetros de seguridad.*
+*RDS PostgreSQL database resources with Multi-AZ configuration, snapshots, and security parameters.*
 
-
-### 8. 🧹 Terraform Destroy - Limpieza de Infraestructura
+### 8. 🧹 Terraform Destroy - Infrastructure Cleanup
 ![Terraform Destroy](images/terraform-destroy.png)
 
-*Ejecución controlada de `terraform destroy` demostrando la capacidad de desmantelar completamente la infraestructura. Muestra cómo con un comando se liberan todos los 80+ recursos de forma segura.*
+*Controlled execution of `terraform destroy`, demonstrating full infrastructure teardown. Shows how all 80+ resources are safely released with one command.*
 
+*The following screenshots show deployed resources directly in the AWS Console.*
 
-
-
-                                    
-
-*Las siguientes capturas reflejan algunos de los recursos creados, esta vez explorandolo desde la Consola de AWS.*
 ---
 
-### 3. 🔀 Tablas de Rutas - Enrutamiento de Tráfico
+### 3. 🔀 Route Tables - Traffic Routing
 ![Route Tables](images/route-tables.png)
 
-*Configuración de las tablas de rutas públicas y privadas. Muestra cómo el tráfico se dirige hacia Internet Gateway (públicas) y NAT Gateway (privadas), permitiendo egreso controlado desde subredes privadas.*
+*Public and private route table configuration. Shows traffic routing to Internet Gateway (public) and NAT Gateway (private), enabling controlled private-subnet egress.*
+
 ---
 
-### 4. 🔐 Subnets - Aislamiento de Capas
+### 4. 🔐 Subnets - Layer Isolation
 ![Subnets Configuration](images/subnets.png)
 
-*Detalle de las 6 subredes con sus bloques CIDR específicos. Visualiza la distribución en zonas de disponibilidad, ubicación en AZs (AZa, AZb, AZc) y el estado de asociación a tablas de rutas.*
+*Detail of the 6 subnets and CIDR blocks. Shows availability-zone distribution (AZa, AZb, AZc) and route table associations.*
+
 ---
 
-### 5. 🛡️ Security Groups - Firewall y Control de Acceso
+### 5. 🛡️ Security Groups - Firewall and Access Control
 ![Security Groups](images/security-groups.png)
 
-*Configuración del primer Security Group con reglas de entrada y salida. Implementa el principio de menor privilegio permitiendo tráfico específico entre capas de la arquitectura.*
+*First security group configuration with ingress and egress rules. Implements least privilege by allowing only specific inter-layer traffic.*
+
 ---
 
-### 6. 🛡️ Security Groups Adicionales - Aislamiento de Componentes
+### 6. 🛡️ Additional Security Groups - Component Isolation
 ![Security Groups 2](images/security-groups2.png)
 
-*Segundo conjunto de reglas de Security Groups para componentes específicos (ALB, EC2, RDS). Muestra aislamiento completo entre capas y restricción de puertos.*
+*Second set of security group rules for specific components (ALB, EC2, RDS). Shows full layer isolation and port restrictions.*
+
 ---
 
-### 7. ⚖️ Application Load Balancer - Balanceo de Carga
+### 7. ⚖️ Application Load Balancer - Load Distribution
 ![ALB Configuration](images/alb.png)
 
-*Configuración del Application Load Balancer con detalles de red, subredes asociadas y grupos de seguridad. Prepara la distribución de tráfico entre instancias EC2.*
+*Application Load Balancer configuration with networking details, associated subnets, and security groups. Prepares traffic distribution across EC2 instances.*
+
 ---
 
-### 8. 🎯 ALB Listeners - Configuración de Puertos
+### 8. 🎯 ALB Listeners - Port Configuration
 ![ALB Listeners](images/listeners.png)
 
-*Listeners configurados en el ALB para los puertos 80 (HTTP) y 443 (HTTPS). Muestra target groups dinámicos y routing rules para dirigir el tráfico a las instancias correctas.*
+*ALB listeners configured for ports 80 (HTTP) and 443 (HTTPS), with dynamic target groups and routing rules.*
+
 ---
 
-### 9. 🌐 ALB Endpoint - URL de Acceso
+### 9. 🌐 ALB Endpoint - Access URL
 ![ALB Working](images/alb-working.png)
 
-*ALB totalmente funcional con DNS name generado y estado activo. Muestra la URL completa para acceder a la aplicación y confirmación de health checks pasando.*
+*Fully operational ALB with generated DNS and active status. Shows full application URL and passing health checks.*
+
 ---
 
-### 10. 📍 ALB Endpoint URL - Punto de Entrada
+### 10. 📍 ALB Endpoint URL - Entry Point
 ![ALB Endpoint](images/alb-endpoint.png)
 
-*Endpoint específico del ALB generado por AWS con el patrón de nombre estándar. Permite acceso externo a la infraestructura con balanceo de carga automático.*
+*AWS-generated ALB endpoint following standard naming pattern. Provides external access with automatic load balancing.*
+
 ---
 
-### 11. 🖥️ EC2 Instancias - Compute en Ejecución
-![EC2 Instances](images/instancias.png)
+### 11. 🖥️ EC2 Instances - Running Compute
+![EC2 Instances](images/ec2-instances.png)
 
-*Instancias EC2 t3.micro activas y en estado "running". Muestra información de instancia, zona de disponibilidad asignada y conexión a la VPC privada.*
+*Active EC2 t3.micro instances in running state, including availability zone assignment and private VPC connectivity.*
+
 ---
 
-### 12. 🔄 Auto Scaling Group - Escalado Automático
+### 12. 🔄 Auto Scaling Group - Automatic Scaling
 ![ASG Configuration](images/asg.png)
 
-*Grupo Auto Escalado configurado con capacidad deseable de 1-3 instancias. Visualiza métricas de escalado, políticas asociadas y distribución en múltiples AZs.*
+*Auto Scaling Group configured with desired capacity of 1-3 instances, with scaling metrics and multi-AZ distribution.*
+
 ---
 
-### 13. 💾 S3 General - Almacenamiento Estándar
+### 13. 💾 S3 General - Standard Storage
 ![S3 General](images/s3-general.png)
 
-*Bucket S3 principal con configuración de almacenamiento general. Muestra versionado habilitado, encriptación por defecto y políticas de acceso.*
+*Main S3 bucket configuration with versioning, default encryption, and access policies.*
+
 ---
 
-### 14. 📝 S3 Logs - Logs del ALB
+### 14. 📝 S3 Logs - ALB Logs
 ![S3 Logs](images/s3-logs.png)
 
-*Bucket S3 dedicado para almacenar logs del Application Load Balancer. Implementa políticas de ciclo de vida para gestionar la retención de logs automáticamente.*
+*Dedicated S3 bucket for ALB access logs with lifecycle policies for retention management.*
+
 ---
 
-### 15. 🌐 S3 Website - Sitio Estático
+### 15. 🌐 S3 Website - Static Site
 ![S3 Website](images/s3-page.png)
 
-*Configuración de S3 como hosting de sitio web estático. Muestra el contenido servido directamente desde S3 con índice HTML y assets estáticos (CSS, JS, imágenes).*
+*S3 static website hosting configuration serving HTML index and static assets (CSS, JS, images).* 
+
 ---
 
-### 16. 📋 Terraform State List - Recursos Creados
+### 16. 📋 Terraform State List - Created Resources
 ![State List](images/state-list.png)
 
-*Listado completo de los 80+ recursos creados y gestionados por Terraform. Muestra el estado centralizado de toda la infraestructura en AWS.*
+*Complete list of 80+ resources managed by Terraform, showing centralized state for AWS infrastructure.*
+
 ---
 
-### 17. 🗂️ Estructura de Carpetas - Organización del Proyecto
+### 17. 🗂️ Folder Structure - Project Organization
 ![Project Folders](images/folders.png)
 
-*Organización modular del proyecto con carpetas para envs (dev, prod, stage), modules y docs. Muestra la estructura escalable y reutilizable del código IaC.*
+*Modular project structure with envs (dev, prod, stage), modules, and docs directories.*
+
 ---
 
 ### 18. 🚀 GitHub Workflows - CI/CD Pipelines
 ![Workflows](images/workflows.png)
 
-*Workflows de GitHub Actions configurados para automatización. Incluye terraform-ci.yml y terraform-cd.yml para validación y despliegue automático.*
+*GitHub Actions workflows for automation, including terraform-ci.yml and terraform-cd.yml for validation and deployment.*
+
 ---
 
-### 19. ⚙️ GitHub Pipelines - Estado de Ejecución
+### 19. ⚙️ GitHub Pipelines - Execution Status
 ![Pipelines](images/pipelines.png)
 
-*Estado de ejecución de los pipelines de CI/CD. Muestra logs de validación, plan de cambios y ejecución automática de terraform apply en entornos designados.*
+*CI/CD pipeline execution status with validation logs, change plans, and automatic `terraform apply` in designated environments.*
+
 ---
 
-### 20. 🧹 Terraform Destroy - Limpieza de Infraestructura
+### 20. 🧹 Terraform Destroy - Infrastructure Cleanup
 ![Terraform Destroy](images/terraform-destroy.png)
 
-*Ejecución controlada de `terraform destroy` demostrando la capacidad de desmantelar completamente la infraestructura. Muestra cómo con un comando se liberan todos los 80+ recursos de forma segura.*
+*Controlled `terraform destroy` execution proving safe and complete infrastructure teardown of all 80+ resources.*
+
 ---
 
-
-
-## 📊 Resumen de Capturas
+## 📊 Screenshot Summary
+| # | Description | File | Status |
+|---|-------------|------|--------|
 | 1 | Terraform Init | `terraform-init.png` | ✅ |
 | 2 | AWS Resources | `Resources.png` | ✅ |
 | 3 | AWS Resources 2 | `Resources2.png` | ✅ |
@@ -180,10 +190,10 @@
 
 ---
 
-## 📌 Notas
+## 📌 Notes
 
-- Todas las imágenes están en formato PNG de alta calidad
-- El orden refleja el flujo de despliegue desde inicialización hasta destrucción
-- Las descripciones incluyen contexto técnico y relación con otros componentes
+- All images are high-quality PNG format
+- The order reflects the deployment flow from initialization to destroy
+- Descriptions include technical context and component relationships
 
-[← Volver al README](../README.md)
+[← Back to README](../README.md)
