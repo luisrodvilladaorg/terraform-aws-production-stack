@@ -76,9 +76,11 @@ variable "environment" {
 }
 
 variable "scale_up_cpu_threshold" {
+  type    = number
   default = 70
 }
 
 variable "scale_down_cpu_threshold" {
+  type    = number
   default = 20
 }
