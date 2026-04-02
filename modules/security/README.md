@@ -113,7 +113,7 @@ Continuous monitoring for:
 Automated rules to ensure:
 - ✅ S3 buckets are encrypted
 - ✅ RDS instances have backups
-- ✅ Security groups don't allow 0.0.0.0/0 SSH
+- ✅ SSH access is restricted by security group rules
 - ✅ Root account MFA enabled
 - ✅ CloudTrail enabled
 

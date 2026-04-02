@@ -1,3 +1,12 @@
+[![Terraform](https://img.shields.io/badge/Terraform-1.5+-623CE4?logo=terraform)](https://www.terraform.io/)
+[![AWS](https://img.shields.io/badge/AWS-Cloud-FF9900?logo=amazon-aws)](https://aws.amazon.com/)
+![CI](https://github.com/luisrodvilladaorg/terraform-aws-production-stack/actions/workflows/terraform-ci.yml/badge.svg)
+![CD](https://github.com/luisrodvilladaorg/terraform-aws-production-stack/actions/workflows/terraform-cd.yml/badge.svg)
+
+[![Last Commit](https://img.shields.io/github/last-commit/luisrodvilladaorg/terraform-aws-production-stack)](https://github.com/luisrodvilladaorg/terraform-aws-production-stack/commits/main)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+![Infrastructure](https://img.shields.io/badge/Infrastructure-as_Code-blue)
+
 # 🚀 AWS Production Infrastructure - Terraform
 
 > Production-ready AWS infrastructure with Terraform
@@ -9,15 +18,6 @@ Implements infrastructure-as-code principles, modularity, and deployment automat
 Prepared to run containerized platforms and Kubernetes environments.
 Integrates cloud security, networking, and resilience best practices.
 Built as a solid foundation for production environments and modern DevOps teams.
-
-[![Terraform](https://img.shields.io/badge/Terraform-1.5+-623CE4?logo=terraform)](https://www.terraform.io/)
-[![AWS](https://img.shields.io/badge/AWS-Cloud-FF9900?logo=amazon-aws)](https://aws.amazon.com/)
-![CI](https://github.com/luisrodvilladaorg/terraform-aws-production-stack/actions/workflows/terraform-ci.yml/badge.svg)
-![CD](https://github.com/luisrodvilladaorg/terraform-aws-production-stack/actions/workflows/terraform-cd.yml/badge.svg)
-
-[![Last Commit](https://img.shields.io/github/last-commit/luisrodvilladaorg/terraform-aws-production-stack)](https://github.com/luisrodvilladaorg/terraform-aws-production-stack/commits/main)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-![Infrastructure](https://img.shields.io/badge/Infrastructure-as_Code-blue)
 
 ---
 
@@ -507,8 +507,10 @@ All modules export complete outputs with descriptions:
 ## 📚 Documentation
 
 - **[Deployment Examples](docs/ejemplos.md)** - Real-world deployment scenarios
+- **[Minimal Module Example (networking + alb)](docs/MODULE_EXAMPLE_NETWORKING_ALB.md)** - Smallest wiring example between modules
 - **[Module Documentation](modules/)** - Individual module READMEs
 - **[Command Reference](docs/commands.md)** - Common Terraform commands
+- **[Naming Standard](docs/NAMING_STANDARD.md)** - Consistent naming for variables, tags, and outputs
 
 ---
 
@@ -522,6 +524,16 @@ All modules export complete outputs with descriptions:
 - [ ] ECS/Fargate containerization
 - [ ] Multi-region deployment
 - [ ] Automated testing with Terratest
+
+---
+
+## 🗣️ What I Would Say in Interview
+
+- **Networking decisions:** I implemented a 3-tier VPC design with public subnets for ALB and private subnets for EC2/RDS, reducing exposure and enforcing traffic flow through controlled ingress points.
+- **Security Groups strategy:** I applied layered SG rules so ALB accepts public HTTP/HTTPS, app instances accept traffic only from ALB, and RDS accepts PostgreSQL only from app instances.
+- **IAM least privilege:** I used role-based access with scoped policies and avoided hardcoded credentials, following least-privilege patterns for compute and service integrations.
+- **Remote Terraform state:** I use remote state in S3 (with encryption and collaboration-ready locking patterns) to keep state centralized, auditable, and safe for team workflows.
+- **Pipeline approach:** I designed CI/CD stages around `terraform fmt`, `validate`, `plan`, security scanning, and controlled apply/approval gates to reduce deployment risk.
 
 ---
 
@@ -547,17 +559,6 @@ Built as an enterprise-grade Infrastructure as Code practices showcase. Demonstr
 ---
 
 ⭐ **Star this repository** if you find it useful!
-
----
-
-## 🎯 About
-
-This project demonstrates expertise in:
-- ☁️ AWS Cloud Architecture
-- 🔧 Infrastructure as Code (Terraform)
-- 🔐 Security and Best Practices
-- 📈 High Availability and Scalability
-- 💡 DevOps Automation
 
 ---
 

@@ -18,7 +18,7 @@ Establishes the network foundation for the entire infrastructure, segregating pu
 | `aws_subnet.private` | 3 private subnets (one per AZ) |
 | `aws_route_table.public` | Public route table with Internet route |
 | `aws_route_table_association.public` | Subnet-route table associations |
-| `aws_security_group.base` | Temporary base security group (HTTP/SSH) |
+| `aws_security_group.base` | Temporary base security group (HTTP baseline) |
 
 ## 🗺️ Network Architecture
 
@@ -79,7 +79,7 @@ Establishes the network foundation for the entire infrastructure, segregating pu
 ## 🔒 Security
 
 - Private subnets have no direct Internet access
-- Base security group allows SSH (22) and HTTP (80)
+- Base security group allows HTTP (80)
 - Each tier (ALB, EC2, RDS) has its own specific security group
 
 ## 📝 Future Improvements
