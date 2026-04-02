@@ -13,7 +13,7 @@ Provides a fleet of EC2 instances with automatic scaling based on CPU metrics, u
 | Resource | Description |
 |---------|-------------|
 | `data.aws_ami.amazon_linux` | Most recent Amazon Linux 2 AMI (x86_64) |
-| `aws_security_group.asg` | Security Group allowing HTTP from ALB and SSH for debugging |
+| `aws_security_group.asg` | Security Group allowing HTTP from ALB |
 | `aws_launch_template.this` | Launch template with Spot instance configuration |
 | `aws_autoscaling_group.this` | Auto Scaling Group distributed across multiple AZs |
 | `aws_autoscaling_policy.scale_up` | Scale up policy (CPU > 70%) |
@@ -67,4 +67,4 @@ Using Spot instances can reduce costs by up to **90%** compared to On-Demand ins
 
 - Spot instances can be interrupted with 2 minutes notice
 - User data syncs files from S3 on each boot
-- SSH is open from Internet (0.0.0.0/0) - consider restricting in production
+- SSH ingress is not exposed by default in this module

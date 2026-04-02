@@ -8,3 +8,8 @@ plugin "aws" {
   # Official plugin source
   source  = "github.com/terraform-linters/tflint-ruleset-aws"
 }
+
+config {
+  module = true
+  force  = false
+}
