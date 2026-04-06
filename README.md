@@ -170,7 +170,6 @@ The infrastructure supports multiple environments with specific configurations:
 - **Purpose:** Critical applications with availability SLA
 - **EC2 Instances:** t3.micro to t3.small (Auto Scaling 1-3)
 - **RDS:** db.t3.micro Multi-AZ with automatic failover
-- **Cost:** ~$81.50/month (HA included)
 - **Characteristic:** Multi-AZ with standby replica
 - **Use case:** Production, critical workloads, 99.9% uptime
 

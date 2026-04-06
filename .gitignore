@@ -20,7 +20,7 @@ useful-commands
 ##################################
 # Terraform Backend Lock
 ##################################
-.terraform.lock.hcl
+
 .secrets
 ##################################
 # Environment files
@@ -51,3 +51,4 @@ docs/**/*.tar.gz
 .secrets
 Apuntes
 *.tfplan
+envs/dev/state_list
