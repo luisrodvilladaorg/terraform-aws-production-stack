@@ -1,0 +1,15 @@
+name: Test Terraform Runner
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: terraform-runner-set
+    steps:
+      - name: Check tools
+        run: |
+          echo "✅ Runner funcionando"
+          hostname
+          terraform version
+          aws --version
