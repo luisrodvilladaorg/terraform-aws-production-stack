@@ -13,7 +13,7 @@ permissions:
 jobs:
   terraform-ci:
     name: Terraform CI Validation
-    runs-on: terraform-runner-set
+    runs-on: arc-runner-set
 
     defaults:
       run:
@@ -23,11 +23,40 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install Terraform
+        run: |
+          curl -fsSL https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip \
+            -o terraform.zip
+          unzip terraform.zip
+          sudo mv terraform /usr/local/bin/
+          rm terraform.zip
+          terraform version
+
+      - name: Install AWS CLI
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" \
+            -o "awscliv2.zip"
+          unzip awscliv2.zip
+          ./aws/install --install-dir $HOME/.aws-cli --bin-dir $HOME/.local/bin
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          rm -rf awscliv2.zip aws/
+
+      - name: Configure AWS credentials
+        run: |
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set region eu-west-3
+
       - name: Verify AWS identity
         run: aws sts get-caller-identity
 
       - name: Check Terraform formatting
         run: terraform fmt -check -recursive
+
+      - name: Install TFLint
+        run: |
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+          tflint --version
 
       - name: Run TFLint
         run: tflint --recursive
