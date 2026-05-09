@@ -5,11 +5,28 @@ on:
 
 jobs:
   test:
-    runs-on: terraform-runner-set
+    runs-on: arc-runner-set
     steps:
-      - name: Check tools
+      - name: Check runner
         run: |
           echo "✅ Runner funcionando"
           hostname
+          whoami
+
+      - name: Install Terraform
+        run: |
+          curl -fsSL https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip \
+            -o terraform.zip
+          unzip terraform.zip
+          sudo mv terraform /usr/local/bin/
+          rm terraform.zip
           terraform version
+
+      - name: Install AWS CLI
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" \
+            -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+          rm -rf awscliv2.zip aws/
           aws --version
