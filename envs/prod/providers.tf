@@ -10,14 +10,5 @@ terraform {
 }
 
 provider "aws" {
-  region  = "eu-west-3"
-  profile = "default"
-
-  default_tags {
-    tags = {
-      Environment = "prod"
-      Project     = "terraform-aws-stack"
-      ManagedBy   = "Terraform"
-    }
-  }
+  region = "eu-west-3"
 }
