@@ -13,7 +13,7 @@ permissions:
 jobs:
   terraform-ci:
     name: Terraform CI Validation
-    runs-on: self-hosted
+    runs-on: terraform-runner-set
 
     defaults:
       run:
@@ -23,19 +23,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.6.6
-
       - name: Verify AWS identity
         run: aws sts get-caller-identity
 
       - name: Check Terraform formatting
         run: terraform fmt -check -recursive
-
-      - name: Setup TFLint
-        uses: terraform-linters/setup-tflint@v4
 
       - name: Run TFLint
         run: tflint --recursive
