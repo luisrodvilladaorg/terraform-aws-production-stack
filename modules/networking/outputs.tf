@@ -37,3 +37,8 @@ output "availability_zones" {
   description = "List of availability zones used"
   value       = var.availability_zones
 }
+
+output "public_subnet_count" {
+  description = "Number of public subnets created"
+  value       = length(aws_subnet.public[*].id)
+}

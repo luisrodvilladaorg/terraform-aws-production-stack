@@ -1,8 +1,8 @@
 module "networking" {
   source = "../../modules/networking"
 
-  project_name = "terraform-aws-stack"
-  environment  = "dev"
+  project_name = local.name_prefix
+  environment  = local.environment
 
   vpc_cidr = "10.0.0.0/16"
 
@@ -86,9 +86,8 @@ module "alb" {
 module "rds" {
   source = "../../modules/rds"
 
-  project_name = "terraform-aws-stack"
   environment  = "dev"
-
+  
   vpc_id             = module.networking.vpc_id
   private_subnet_ids = module.networking.private_subnet_ids
 
@@ -97,6 +96,9 @@ module "rds" {
   db_name     = var.db_name
   db_user     = var.db_user
   db_password = var.db_password
+  tags       =  local.common_tags
+  project_name = local.name_prefix
+
 }
 
 

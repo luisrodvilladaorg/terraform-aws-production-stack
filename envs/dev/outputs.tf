@@ -72,6 +72,7 @@ output "asg_arn" {
 output "db_endpoint" {
   description = "RDS instance connection endpoint"
   value       = module.rds.endpoint
+  sensitive   = true
 }
 
 output "db_port" {
