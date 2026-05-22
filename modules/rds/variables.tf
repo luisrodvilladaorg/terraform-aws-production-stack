@@ -55,11 +55,6 @@ variable "multi_az" {
   default     = false
 }
 
-variable "backup_retention_period" {
-  description = "Number of days to retain automated backups"
-  type        = number
-  default     = 7
-}
 
 variable "backup_config" {
 

@@ -71,8 +71,8 @@ resource "aws_db_instance" "this" {
 
   # High Availability and Backup Configuration
   multi_az                = var.multi_az
-  backup_retention_period = var.backup_retention_period
-  backup_window           = "03:00-04:00"
+  backup_retention_period = var.backup_config.retention_days
+  backup_window           = var.backup_config.backup_windows
   maintenance_window      = "Mon:04:00-Mon:05:00"
 
   vpc_security_group_ids = [aws_security_group.rds.id]
