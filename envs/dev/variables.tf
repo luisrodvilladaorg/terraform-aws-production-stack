@@ -5,9 +5,9 @@ variable "db_name" {
   default     = "appdb"
 
   validation {
-  condition     = can(regex("^[a-z][a-z0-9_]*$", var.db_name))
-  error_message = "db_name must start with a letter and contain only lowercase letters, numbers, and underscores."
-}
+    condition     = can(regex("^[a-z][a-z0-9_]*$", var.db_name))
+    error_message = "db_name must start with a letter and contain only lowercase letters, numbers, and underscores."
+  }
 
 }
 

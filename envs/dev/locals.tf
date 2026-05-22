@@ -1,7 +1,7 @@
 locals {
   project_name = "terraform-aws-stack"
   environment  = "dev"
-  
+
   common_tags = {
     Project     = local.project_name
     Environment = local.environment
