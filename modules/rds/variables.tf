@@ -61,22 +61,22 @@ variable "backup_retention_period" {
   default     = 7
 }
 
-variable "backup_config"  {
+variable "backup_config" {
 
   description = "backup_config block for RDS instance, including backup window and preferred backup time"
- 
-  type = object ({
 
-      retention_days = number
-      backup_windows = string   
-      enabled = bool 
-})
-      
-      
-      default = {
-        retention_days = 7
-        backup_windows = "03:00-04:00"
-        enabled       = true
-      }
-      
+  type = object({
+
+    retention_days = number
+    backup_windows = string
+    enabled        = bool
+  })
+
+
+  default = {
+    retention_days = 7
+    backup_windows = "03:00-04:00"
+    enabled        = true
+  }
+
 }
