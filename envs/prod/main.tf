@@ -93,7 +93,6 @@ module "rds" {
 
   vpc_id             = module.networking.vpc_id
   private_subnet_ids = module.networking.private_subnet_ids
-
   asg_security_group_id = module.asg.asg_security_group_id
 
   db_name     = var.db_name
@@ -101,6 +100,10 @@ module "rds" {
   db_password = var.db_password
 
   # Production configuration: Multi-AZ for HA
-  multi_az                = true # 2 AZ with automatic failover
-  backup_retention_period = 30   # Extended backup retention
+   multi_az = true
+   backup_config = {
+    retention_days = 30
+    backup_windows = "03:00-04:00"
+    enabled        = true
+  }
 }
